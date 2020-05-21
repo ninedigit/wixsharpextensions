@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net45</TargetFramework>
+    
+    <!-- Version -->
+    <Version>1.0.0</Version>
+    <PackageVersion>1.0.0</PackageVersion>
+    <PackageReleaseNotes></PackageReleaseNotes>
+
+    <!-- NuGet meta -->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Nine Digit, s.r.o.</Authors>
+    <Copyright>(c) 2020</Copyright>
+    <PackageTags>wix wix-toolset msi csharp-library wixsharp</PackageTags>
+    <Title>WixSharp extensions</Title>
+    <RepositoryUrl>https://github.com/ninedigit/wixsharpextensions</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <DocumentationFile>$(ProjectDir)$(OutputPath)$(MSBuildProjectName).xml</DocumentationFile>
+    <NoWarn>CA1303;CA1030;1701;1702;1591</NoWarn>
+    <Description>Extensions for WixSharp library</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="NineDigit.WixSharpExtensions.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="WixSharp">
+      <Version>1.14.2</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.Windows" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+</Project>
