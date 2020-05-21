@@ -3,7 +3,7 @@ using WixSharp;
 
 namespace NineDigit.WixSharpExtensions
 {
-    public static class ManagedProjectExtensions
+    public static class CustomActionManagedProjectExtensions
     {
         /// <summary>
         /// Binds custom action to the <paramref name="project"/>.

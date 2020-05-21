@@ -12,6 +12,88 @@ namespace NineDigit.WixSharpExtensions
     public static class BundleExtensions
     {
         /// <summary>
+        /// Sets basic information about bundle project.
+        /// </summary>
+        /// <param name="bundle"></param>
+        /// <param name="upgradeCode">
+        /// Unique identifier for a family of bundles. If two bundles have the same UpgradeCode
+        /// the bundle with the highest version will be installed.
+        /// </param>
+        /// <param name="name">Bundle name</param>
+        /// <param name="version">Bundle version</param>
+        /// <returns></returns>
+        public static Bundle SetInfo(this Bundle bundle, Guid upgradeCode, string name, Version version)
+        {
+            if (bundle is null)
+                throw new ArgumentNullException(nameof(bundle));
+
+            bundle.UpgradeCode = upgradeCode;
+            bundle.Name = name;
+            bundle.Version = version;
+
+            return bundle;
+        }
+
+        /// <summary>
+        /// Forces WixSharp.Compiler to preserve all temporary build files (e.g. *.wxs).
+        /// By default, all temporary files are deleted at the end of the build/compilation.
+        /// Note: if WixSharp.Compiler fails to build EXE the PreserveTempFiles value is ignored and all temporary files are preserved.
+        /// </summary>
+        /// <param name="bundle"></param>
+        /// <param name="preserveTempFiles"></param>
+        /// <returns></returns>
+        public static Bundle PreserveTempFiles(this Bundle bundle, bool preserveTempFiles = true)
+        {
+            if (bundle is null)
+                throw new ArgumentNullException(nameof(bundle));
+
+            bundle.PreserveTempFiles = preserveTempFiles;
+
+            return bundle;
+        }
+
+        /// <summary>
+        /// Signs the bundle with certificate described by its thumprint.
+        /// </summary>
+        /// <param name="bundle"></param>
+        /// <param name="certificateThumbprint">Certificate thumprint.</param>
+        /// <param name="signedContentDescription">Description of the product.</param>
+        /// <param name="timestampServerUrl">Timestamp server URL</param>
+        /// <param name="hashAlgorithm">Hash algorithm</param>
+        /// <returns></returns>
+        public static Bundle SignWithCertificateThumprint(this Bundle bundle,
+            string certificateThumbprint,
+            string signedContentDescription,
+            Uri timestampServerUrl,
+            HashAlgorithmType hashAlgorithm = HashAlgorithmType.sha256)
+        {
+            if (bundle is null)
+                throw new ArgumentNullException(nameof(bundle));
+            if (string.IsNullOrWhiteSpace(certificateThumbprint))
+                throw new ArgumentException("Invalid certificate thumbprint.", nameof(certificateThumbprint));
+            if (string.IsNullOrWhiteSpace(signedContentDescription))
+                throw new ArgumentException("Invalid signed content description.", nameof(signedContentDescription));
+            if (timestampServerUrl is null)
+                throw new ArgumentNullException(nameof(timestampServerUrl));
+
+            // https://github.com/oleg-shilo/wixsharp/blob/master/Source/src/WixSharp.Samples/Wix%23%20Samples/Signing/setup.cs
+            // https://github.com/oleg-shilo/wixsharp/issues/827
+
+            bundle.DigitalSignature = new DigitalSignatureBootstrapper()
+            {
+                // https://github.com/oleg-shilo/wixsharp/issues/827
+                // CertificateId = CertificateThumbprint,
+                // CertificateStore = StoreType.sha1Hash,
+                // HashAlgorithm = HashAlgorithmType.sha256,
+                Description = signedContentDescription,
+                TimeUrl = timestampServerUrl,
+                OptionalArguments = $"/v /sha1 {certificateThumbprint} /fd {hashAlgorithm}"
+            };
+
+            return bundle;
+        }
+
+        /// <summary>
         /// Hides an "Options" button from bootstrapper UI.
         /// An hotfix for https://github.com/oleg-shilo/wixsharp/issues/803
         /// </summary>
