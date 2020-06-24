@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using WixSharp;
-using WixSharp.Bootstrapper;
 
 namespace NineDigit.WixSharpExtensions
 {
@@ -29,6 +28,26 @@ namespace NineDigit.WixSharpExtensions
             
             if (directories.Length > 0)
                 project.Dirs = project.Dirs?.JoinWith(directories) ?? directories;
+
+            return project;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <typeparam name="TProject"></typeparam>
+        /// <param name="project"></param>
+        /// <param name="actions">Collection of actions to be attached to the project.</param>
+        /// <returns></returns>
+        public static TProject AddActions<TProject>(this TProject project, params WixSharp.Action[] actions)
+            where TProject : Project
+        {
+            if (project is null)
+                throw new ArgumentNullException(nameof(project));
+            if (actions is null)
+                throw new ArgumentNullException(nameof(actions));
+
+            if (actions.Length > 0)
+                project.Actions = project.Actions?.JoinWith(actions) ?? actions;
 
             return project;
         }
@@ -84,6 +103,7 @@ namespace NineDigit.WixSharpExtensions
         /// <param name="helpUrl"></param>
         /// <param name="aboutUrl"></param>
         /// <param name="productIconFilePath">Icon file</param>
+        /// <param name="helpTelephone"></param>
         /// <returns></returns>
         public static TProject SetControlPanelInfo<TProject>(this TProject project,
             string name,
@@ -93,7 +113,8 @@ namespace NineDigit.WixSharpExtensions
             string contact,
             Uri helpUrl,
             Uri aboutUrl,
-            FileInfo productIconFilePath)
+            FileInfo productIconFilePath,
+            string helpTelephone = null)
             where TProject : Project
         {
             if (project is null)
@@ -116,6 +137,7 @@ namespace NineDigit.WixSharpExtensions
             info.HelpLink = helpUrl?.ToString();
             info.UrlInfoAbout = aboutUrl?.ToString();
             info.ProductIcon = productIconFilePath?.FullName;
+            info.HelpTelephone = helpTelephone;
 
             return project;
         }
@@ -288,12 +310,14 @@ namespace NineDigit.WixSharpExtensions
         /// <param name="name">Service name visible in services list.</param>
         /// <param name="displayName"></param>
         /// <param name="description">Service description visible in services list.</param>
+        /// <param name="dependsOn">Collection of service dependencies</param>
         /// <returns></returns>
         public static TProject AddWindowsServiceAndFirewallRule<TProject>(this TProject project,
             string executableFileName,
             string name,
             string displayName,
-            string description)
+            string description,
+            ServiceDependency[] dependsOn = null)
             where TProject : Project
         {
             if (project is null)
@@ -320,7 +344,8 @@ namespace NineDigit.WixSharpExtensions
                 RemoveOn = SvcEvent.Uninstall_Wait,
                 ConfigureServiceTrigger = ConfigureServiceTrigger.None,
                 FirstFailureActionType = FailureActionType.restart,
-                SecondFailureActionType = FailureActionType.restart
+                SecondFailureActionType = FailureActionType.restart,
+                DependsOn = dependsOn
             };
 
             serviceFile.FirewallExceptions = new[]
