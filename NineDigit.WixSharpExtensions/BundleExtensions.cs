@@ -144,6 +144,7 @@ namespace NineDigit.WixSharpExtensions
         /// <param name="msiVisibleInAddRemoveProgramsMenu">Applied only when TPackage is <see cref="MsiPackage"/>, ignored otherwise.</param>
         /// <param name="msiDisplayInternalUI">Applied only when TPackage is <see cref="MsiPackage"/>, ignored otherwise.</param>
         /// <param name="exeInstallCommand">Applied only when TPackage is <see cref="ExePackage"/>, ignored otherwise.</param>
+        /// <param name="exeExitCodeMap">Applied only when TPackage is <see cref="ExePackage"/>, ignored otherwise.</param>
         /// <returns></returns>
         public static Bundle AddOnlineDependency<TPackage>(
             this Bundle bundle,
@@ -154,7 +155,8 @@ namespace NineDigit.WixSharpExtensions
             bool isRequired = true,
             bool? msiVisibleInAddRemoveProgramsMenu = null,
             bool? msiDisplayInternalUI = null,
-            string exeInstallCommand = null)
+            string exeInstallCommand = null,
+            ExitCodeMap exeExitCodeMap = null)
             where TPackage : WixSharp.Bootstrapper.Package, new()
         {
             if (bundle is null)
@@ -177,6 +179,7 @@ namespace NineDigit.WixSharpExtensions
             else if (package is ExePackage exePackage)
             {
                 exePackage.InstallCommand = exeInstallCommand;
+                exeExitCodeMap?.BindTo(exePackage);
             }
 
             bundle.Chain.Add(package);
@@ -195,6 +198,7 @@ namespace NineDigit.WixSharpExtensions
         /// <param name="msiVisibleInAddRemoveProgramsMenu">Applied only when TPackage is <see cref="MsiPackage"/>, ignored otherwise.</param>
         /// <param name="msiDisplayInternalUI">Applied only when TPackage is <see cref="MsiPackage"/>, ignored otherwise.</param>
         /// <param name="exeInstallCommand">Applied only when TPackage is <see cref="ExePackage"/>, ignored otherwise.</param>
+        /// <param name="exeExitCodeMap">Applied only when TPackage is <see cref="ExePackage"/>, ignored otherwise.</param>
         /// <returns></returns>
         public static Bundle AddLocalDependency<TPackage>(
             this Bundle bundle,
@@ -203,7 +207,8 @@ namespace NineDigit.WixSharpExtensions
             bool isRequired = true,
             bool? msiVisibleInAddRemoveProgramsMenu = null,
             bool? msiDisplayInternalUI = null,
-            string exeInstallCommand = null)
+            string exeInstallCommand = null,
+            ExitCodeMap exeExitCodeMap = null)
             where TPackage : WixSharp.Bootstrapper.Package, new()
         {
             if (bundle is null)
@@ -225,6 +230,7 @@ namespace NineDigit.WixSharpExtensions
             else if (package is ExePackage exePackage)
             {
                 exePackage.InstallCommand = exeInstallCommand;
+                exeExitCodeMap?.BindTo(exePackage);
             }
 
             bundle.Chain.Add(package);
