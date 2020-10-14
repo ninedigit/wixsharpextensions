@@ -326,6 +326,35 @@ namespace NineDigit.WixSharpExtensions
         }
 
         /// <summary>
+        /// Adds registry search for .NET Framework release version.
+        /// <para>
+        /// All release version values are listed here: https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed#detect-net-framework-45-and-later-versions
+        /// </para>
+        /// Usage:
+        /// <para><c>bundle.AddRegistrySearchForDotNetFrameworkReleaseVersion("DOT_NET_FRAMEWORK_RELEASE_VERSION")</c></para>
+        /// <para><c>var dotNetFramework45OrNewerInstalledCondition = WixExpression.Create(new WixExpression("DOT_NET_FRAMEWORK_RELEASE_VERSION"), WixComparativeExpressionOperator.Gte, new WixExpression(DotNeFrameworkReleaseMinimumVersion.DotNetFramework45.ToString()));</c></para>
+        /// </summary>
+        /// <param name="bundle"></param>
+        /// <param name="dotNetFrameworkReleaseVersionVariableName"></param>
+        /// <param name="condition">Condition for evaluating the search. If this evaluates to false, the search is not executed at all.</param>
+        /// <returns></returns>
+        public static Bundle AddRegistrySearchForDotNetFrameworkReleaseVersion(this Bundle bundle, string dotNetFrameworkReleaseVersionVariableName, WixExpression condition = null)
+        {
+            if (bundle is null)
+                throw new ArgumentNullException(nameof(bundle));
+
+            return bundle.AddRegistrySearch(new UtilRegistrySearch
+            {
+                Root = RegistryHive.LocalMachine,
+                Key = @"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full",
+                Value = "Release",
+                Variable = dotNetFrameworkReleaseVersionVariableName,
+                Condition = condition,
+                Result = SearchResult.value
+            });
+        }
+
+        /// <summary>
         /// </summary>
         /// <param name="bundle"></param>
         /// <param name="destinationVariableName"></param>
