@@ -8,9 +8,10 @@ Extension methods for the [WixSharp](https://github.com/oleg-shilo/wixsharp) lib
 
 - Multilanguage MSI (OS will pick UI language based on machine locale settings).
 - Strongly typed expressions to allow conditional installation based on OS version and/or OS architecture.
-- Detection whether .NET core is installed on machine
-- Detection what version of .NET core is installed on machine.
-- Boostrapper with online and offline prerequisities.
+- Detection whether .NET Core is installed on the target machine
+- Detection version of .NET Core installed on the target machine.
+- Detection version of .NET Framework installed on the target machine.
+- Boostrapper with online and offline software prerequisities.
 - Other fluent extension methods that covers many basic scenarios.
 
 ## Usage
