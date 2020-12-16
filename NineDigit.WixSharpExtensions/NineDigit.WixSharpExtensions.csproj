@@ -4,8 +4,8 @@
     <TargetFramework>net45</TargetFramework>
     
     <!-- Version -->
-    <Version>1.0.5</Version>
-    <PackageVersion>1.0.5</PackageVersion>
+    <Version>1.0.7</Version>
+    <PackageVersion>1.0.7</PackageVersion>
     <PackageReleaseNotes></PackageReleaseNotes>
 
     <!-- NuGet meta -->

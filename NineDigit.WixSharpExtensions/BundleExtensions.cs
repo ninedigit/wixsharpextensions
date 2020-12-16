@@ -11,6 +11,19 @@ namespace NineDigit.WixSharpExtensions
     /// </summary>
     public static class BundleExtensions
     {
+        public static Bundle ConfigureApplication(this Bundle bundle, Action<WixStandardBootstrapperApplication> configurationCallback)
+        {
+            if (bundle is null)
+                throw new ArgumentNullException(nameof(bundle));
+
+            if (configurationCallback is null)
+                throw new ArgumentNullException(nameof(configurationCallback));
+
+            configurationCallback.Invoke(bundle.Application);
+
+            return bundle;
+        }
+
         /// <summary>
         /// Sets basic information about bundle project.
         /// </summary>
@@ -21,8 +34,13 @@ namespace NineDigit.WixSharpExtensions
         /// </param>
         /// <param name="name">Bundle name</param>
         /// <param name="version">Bundle version</param>
+        /// <param name="iconFilePath">
+        /// Optional path to an icon that will replace the default icon in the final Bundle executable.
+        /// This icon will also be displayed in Programs and Features (also known as Add/Remove
+        /// Programs).
+        /// </param>
         /// <returns></returns>
-        public static Bundle SetInfo(this Bundle bundle, Guid upgradeCode, string name, Version version)
+        public static Bundle SetInfo(this Bundle bundle, Guid upgradeCode, string name, Version version, string iconFilePath = null)
         {
             if (bundle is null)
                 throw new ArgumentNullException(nameof(bundle));
@@ -30,6 +48,28 @@ namespace NineDigit.WixSharpExtensions
             bundle.UpgradeCode = upgradeCode;
             bundle.Name = name;
             bundle.Version = version;
+
+            if (!string.IsNullOrWhiteSpace(iconFilePath))
+                bundle.IconFile = iconFilePath;
+
+            return bundle;
+        }
+
+        /// <summary>
+        /// Sets splashscreen that will be shown as the bootstrapper application is being loaded.
+        /// </summary>
+        /// <param name="bundle"></param>
+        /// <param name="splashScreenBitmapPath">
+        /// Path to a bitmap that will be shown as the bootstrapper application is being
+        /// loaded. If this attribute is not specified, no splash screen will be displayed.
+        /// </param>
+        /// <returns></returns>
+        public static Bundle SetSplashScreen(this Bundle bundle, string splashScreenBitmapPath)
+        {
+            if (bundle is null)
+                throw new ArgumentNullException(nameof(bundle));
+
+            bundle.SplashScreenSource = splashScreenBitmapPath;
 
             return bundle;
         }
@@ -459,12 +499,40 @@ namespace NineDigit.WixSharpExtensions
         /// <param name="bundle"></param>
         /// <returns></returns>
         public static Bundle HideFromAddRemovePrograms(this Bundle bundle)
+            => bundle.SetAddRemoveProgramsButtons(AddRemoveProgramsButtonMode.None);
+
+        /// <summary>
+        /// Sets visibility in Add/Remove programs menu of the bundle options or the bundle itself.
+        /// </summary>
+        /// <param name="bundle"></param>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        public static Bundle SetAddRemoveProgramsButtons(this Bundle bundle, AddRemoveProgramsButtonMode mode)
         {
             if (bundle is null)
                 throw new ArgumentNullException(nameof(bundle));
 
-            bundle.DisableRemove = true;
-            bundle.DisableModify = "yes";
+            switch (mode)
+            {
+                case AddRemoveProgramsButtonMode.None:
+                    bundle.DisableRemove = true;
+                    bundle.DisableModify = "yes";
+                    break;
+                case AddRemoveProgramsButtonMode.ChangeButtonOnly:
+                    bundle.DisableRemove = true;
+                    bundle.DisableModify = "no";
+                    break;
+                case AddRemoveProgramsButtonMode.UninstallButtonOnly:
+                    bundle.DisableRemove = false;
+                    bundle.DisableModify = "yes";
+                    break;
+                case AddRemoveProgramsButtonMode.SingleUninstallChangeButton:
+                    bundle.DisableRemove = false;
+                    bundle.DisableModify = "button";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mode), "Unknown mode.");
+            }
 
             return bundle;
         }
