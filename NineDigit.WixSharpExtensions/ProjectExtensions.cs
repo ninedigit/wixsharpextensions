@@ -70,20 +70,36 @@ namespace NineDigit.WixSharpExtensions
             InstallScope installScope = InstallScope.perMachine)
             where TProject : Project
         {
+            return project.SetProjectInfo(upgradeCode, new ProjectNameInfo(name, description), version, installScope);
+        }
+
+        /// <summary>
+        /// Sets basic project info.
+        /// </summary>
+        /// <param name="project"></param>
+        /// <param name="upgradeCode">Same value for all project versions. Otherwise upgrade will not work.</param>
+        /// <param name="projectName">Project name and description information.</param>
+        /// <param name="version">Project version without revision part specified.</param>
+        /// <param name="installScope">Installation scope of this project.</param>
+        /// <returns></returns>
+        public static TProject SetProjectInfo<TProject>(this TProject project,
+            Guid upgradeCode,
+            ProjectNameInfo projectName,
+            Version version,
+            InstallScope installScope = InstallScope.perMachine)
+            where TProject : Project
+        {
             if (project is null)
                 throw new ArgumentNullException(nameof(project));
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Invalid project name.", nameof(name));
-            if (string.IsNullOrWhiteSpace(description))
-                throw new ArgumentException("Invalid project description.", nameof(description));
+            if (projectName is null)
+                throw new ArgumentNullException(nameof(projectName));
             if (version is null)
                 throw new ArgumentNullException(nameof(version));
             if (version.Revision != default)
                 throw new ArgumentException("Version must not contain revision. Only first three parts (major, minor and build) are supported by Wix.", nameof(version));
 
             project.GUID = upgradeCode;
-            project.Name = name;
-            project.Description = description;
+            projectName.BindTo(project);
             project.UpgradeCode = upgradeCode;
             project.InstallScope = installScope;
             project.Version = version;
@@ -119,25 +135,30 @@ namespace NineDigit.WixSharpExtensions
         {
             if (project is null)
                 throw new ArgumentNullException(nameof(project));
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Invalid product name.", nameof(name));
 
-            if (project.ControlPanelInfo is null)
-                project.ControlPanelInfo = new ProductInfo();
+            var controlPanelInfo = new ProjectControlPanelInfo(
+                name, manufacturer, readme, comment, contact,
+                helpUrl, aboutUrl, productIconFilePath, helpTelephone);
 
-            // https://github.com/oleg-shilo/wixsharp/blob/master/Source/src/WixSharp.Samples/Wix%23%20Samples/ProductInfo/setup.cs
+            return project.SetControlPanelInfo(controlPanelInfo);
+        }
+
+        /// <summary>
+        /// Sets properties visible in add/remove programs section of control panel.
+        /// </summary>
+        /// <param name="project"></param>
+        /// <param name="controlPanelInfo"></param>
+        /// <returns></returns>
+        public static TProject SetControlPanelInfo<TProject>(this TProject project, ProjectControlPanelInfo controlPanelInfo)
+            where TProject : Project
+        {
+            if (project is null)
+                throw new ArgumentNullException(nameof(project));
             
-            var info = project.ControlPanelInfo;
+            if (controlPanelInfo is null)
+                throw new ArgumentNullException(nameof(controlPanelInfo));
 
-            info.Name = name;
-            info.Manufacturer = manufacturer;
-            info.Readme = readme;
-            info.Comments = comment;
-            info.Contact = contact;
-            info.HelpLink = helpUrl?.ToString();
-            info.UrlInfoAbout = aboutUrl?.ToString();
-            info.ProductIcon = productIconFilePath?.FullName;
-            info.HelpTelephone = helpTelephone;
+            controlPanelInfo.BindTo(project);
 
             return project;
         }

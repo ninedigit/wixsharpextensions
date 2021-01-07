@@ -20,8 +20,15 @@ namespace NineDigit.WixSharpExtensions.Localization
         /// number when a product with a higher version is installed.
         /// Used only when WixSharp.Project.MajorUpgrade.AllowDowngrades is set to <c>false</c> (the default).
         /// </param>
-        public ProjectLocalization(string language, string localizationFile = null, string downgradeErrorMessage = null)
-            : this(CultureInfo.GetCultureInfo(language), localizationFile, downgradeErrorMessage)
+        /// <param name="nameInfo">Specify project name and description, if should be different in this localization.</param>
+        /// <param name="controlPanelInfo">Specify information visible in add/remove programs menu, if they should be localized.</param>
+        public ProjectLocalization(
+            string language,
+            string localizationFile = null,
+            string downgradeErrorMessage = null,
+            ProjectNameInfo nameInfo = null,
+            ProjectControlPanelInfo controlPanelInfo = null)
+            : this(CultureInfo.GetCultureInfo(language), localizationFile, downgradeErrorMessage, nameInfo, controlPanelInfo)
         {
         }
 
@@ -35,8 +42,15 @@ namespace NineDigit.WixSharpExtensions.Localization
         /// number when a product with a higher version is installed.
         /// Used only when WixSharp.Project.MajorUpgrade.AllowDowngrades is set to <c>false</c> (the default).
         /// </param>
-        public ProjectLocalization(CultureInfo cultureInfo, string localizationFile = null, string downgradeErrorMessage = null)
-            : this(GetNonNullCultureInfo(cultureInfo).Name, GetNonNullCultureInfo(cultureInfo).TextInfo.ANSICodePage.ToString(CultureInfo.InvariantCulture), GetNonNullCultureInfo(cultureInfo).LCID, localizationFile, downgradeErrorMessage)
+        /// <param name="nameInfo">Specify project name and description, if should be different in this localization.</param>
+        /// <param name="controlPanelInfo">Specify information visible in add/remove programs menu, if they should be localized.</param>
+        public ProjectLocalization(
+            CultureInfo cultureInfo,
+            string localizationFile = null,
+            string downgradeErrorMessage = null,
+            ProjectNameInfo nameInfo = null,
+            ProjectControlPanelInfo controlPanelInfo = null)
+            : this(GetNonNullCultureInfo(cultureInfo).Name, GetNonNullCultureInfo(cultureInfo).TextInfo.ANSICodePage.ToString(CultureInfo.InvariantCulture), GetNonNullCultureInfo(cultureInfo).LCID, localizationFile, downgradeErrorMessage, nameInfo, controlPanelInfo)
         {
         }
 
@@ -51,8 +65,16 @@ namespace NineDigit.WixSharpExtensions.Localization
         /// number when a product with a higher version is installed.
         /// Used only when WixSharp.Project.MajorUpgrade.AllowDowngrades is set to <c>false</c> (the default).
         /// </param>
-        public ProjectLocalization(string language, string codePage, string localizationFile = null, string downgradeErrorMessage = null)
-            : this(language, codePage, new CultureInfo(language).LCID, localizationFile, downgradeErrorMessage)
+        /// <param name="nameInfo">Specify project name and description, if should be different in this localization.</param>
+        /// <param name="controlPanelInfo">Specify information visible in add/remove programs menu, if they should be localized.</param>
+        public ProjectLocalization(
+            string language,
+            string codePage,
+            string localizationFile = null,
+            string downgradeErrorMessage = null,
+            ProjectNameInfo nameInfo = null,
+            ProjectControlPanelInfo controlPanelInfo = null)
+            : this(language, codePage, new CultureInfo(language).LCID, localizationFile, downgradeErrorMessage, nameInfo, controlPanelInfo)
         {
         }
 
@@ -68,7 +90,16 @@ namespace NineDigit.WixSharpExtensions.Localization
         /// number when a product with a higher version is installed.
         /// Used only when WixSharp.Project.MajorUpgrade.AllowDowngrades is set to <c>false</c> (the default).
         /// </param>
-        private ProjectLocalization(string language, string codePage, int lcid, string localizationFile = null, string downgradeErrorMessage = null)
+        /// <param name="nameInfo">Specify project name and description, if should be different in this localization.</param>
+        /// <param name="controlPanelInfo">Specify information visible in add/remove programs menu, if they should be localized.</param>
+        private ProjectLocalization(
+            string language,
+            string codePage,
+            int lcid,
+            string localizationFile = null,
+            string downgradeErrorMessage = null,
+            ProjectNameInfo nameInfo = null,
+            ProjectControlPanelInfo controlPanelInfo = null)
         {
             if (string.IsNullOrWhiteSpace(language))
                 throw new ArgumentException("Invalid localization language.", nameof(language));
@@ -81,6 +112,8 @@ namespace NineDigit.WixSharpExtensions.Localization
             this.LocalizationFile = localizationFile;
             this.LanguageCodeId = lcid;
             this.DowngradeErrorMessage = downgradeErrorMessage;
+            this.NameInfo = nameInfo;
+            this.ControlPanelInfo = controlPanelInfo;
         }
 
         public string Language { get; }
@@ -88,6 +121,8 @@ namespace NineDigit.WixSharpExtensions.Localization
         public string LocalizationFile { get; }
         public int LanguageCodeId { get; }
         public string DowngradeErrorMessage { get; }
+        public ProjectControlPanelInfo ControlPanelInfo { get; }
+        public ProjectNameInfo NameInfo { get; }
 
         internal void BindTo(Project project)
         {
@@ -105,6 +140,9 @@ namespace NineDigit.WixSharpExtensions.Localization
 
                 project.MajorUpgrade.DowngradeErrorMessage = this.DowngradeErrorMessage;
             }
+
+            this.NameInfo?.BindTo(project);
+            this.ControlPanelInfo?.BindTo(project);
         }
 
         private static CultureInfo GetNonNullCultureInfo(CultureInfo cultureInfo)
