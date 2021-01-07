@@ -82,6 +82,7 @@ namespace NineDigit.WixSharpExtensions
         /// <param name="version">Project version without revision part specified.</param>
         /// <param name="installScope">Installation scope of this project.</param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException">Thrown when version contains revision segment.</exception>
         public static TProject SetProjectInfo<TProject>(this TProject project,
             Guid upgradeCode,
             ProjectNameInfo projectName,
@@ -123,14 +124,14 @@ namespace NineDigit.WixSharpExtensions
         /// <returns></returns>
         public static TProject SetControlPanelInfo<TProject>(this TProject project,
             string name,
-            string manufacturer,
-            string readme,
-            string comment,
-            string contact,
-            Uri helpUrl,
-            Uri aboutUrl,
-            FileInfo productIconFilePath,
-            string helpTelephone = null)
+            string? manufacturer,
+            string? readme,
+            string? comment,
+            string? contact,
+            Uri? helpUrl,
+            Uri? aboutUrl,
+            FileInfo? productIconFilePath,
+            string? helpTelephone = null)
             where TProject : Project
         {
             if (project is null)
@@ -266,9 +267,9 @@ namespace NineDigit.WixSharpExtensions
         /// <param name="licenceRtfFile"></param>
         /// <returns></returns>
         public static TProject SetMinimalUI<TProject>(this TProject project,
-            FileInfo backgroundImage = null,
-            FileInfo bannerImage = null,
-            FileInfo licenceRtfFile = null)
+            FileInfo? backgroundImage = null,
+            FileInfo? bannerImage = null,
+            FileInfo? licenceRtfFile = null)
             where TProject : Project
         {
             if (project is null)
@@ -291,7 +292,7 @@ namespace NineDigit.WixSharpExtensions
         /// <param name="outputFileName">File name without the (.MSI/.MSM) extension.</param>
         /// <returns></returns>
         public static TProject SetOutputPath<TProject>(this TProject project,
-            DirectoryInfo outputDir,
+            DirectoryInfo? outputDir,
             string outputFileName)
             where TProject : Project
         {
@@ -338,7 +339,7 @@ namespace NineDigit.WixSharpExtensions
             string name,
             string displayName,
             string description,
-            ServiceDependency[] dependsOn = null)
+            ServiceDependency[]? dependsOn = null)
             where TProject : Project
         {
             if (project is null)

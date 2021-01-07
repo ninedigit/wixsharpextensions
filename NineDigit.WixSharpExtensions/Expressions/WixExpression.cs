@@ -103,7 +103,7 @@ namespace NineDigit.WixSharpExtensions.Expressions
         public WixExpression Xor(WixExpression other)
             => Xor(this, other);
 
-        public static implicit operator string(WixExpression builder)
+        public static implicit operator string?(WixExpression builder)
             => builder?.value;
 
         public override string ToString()

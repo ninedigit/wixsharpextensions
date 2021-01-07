@@ -26,7 +26,7 @@ namespace NineDigit.WixSharpExtensions.Mvvm
             if (action is null)
                 throw new ArgumentNullException(nameof(action));
 
-            BeginInvokeOnUI<object>((obj) => action(), null);
+            BeginInvokeOnUI<object>((obj) => action(), null!);
         }
 
         /// <summary>
@@ -47,11 +47,11 @@ namespace NineDigit.WixSharpExtensions.Mvvm
                     evtWaitHandle.Set();
                 }
 
-                using (EventWaitHandle waitHandle = new AutoResetEvent(false))
-                {
-                    BeginInvokeOnUI(innerAction, waitHandle);
-                    waitHandle.WaitOne();
-                }
+                using EventWaitHandle waitHandle = new AutoResetEvent(false);
+                
+                BeginInvokeOnUI(innerAction, waitHandle);
+                
+                waitHandle.WaitOne();
             }
             else
             {
@@ -62,14 +62,14 @@ namespace NineDigit.WixSharpExtensions.Mvvm
         /// <summary>
         /// Wraps the Application Dispatcher.
         /// </summary>
-        sealed class DefaultDispatcher
+        internal static class DefaultDispatcher
         {
             /// <summary>
             /// Forwards the BeginInvoke to the current application's <see cref="Dispatcher"/>.
             /// </summary>
             /// <param name="action">Method to be invoked.</param>
             /// <param name="arg">Arguments to pass to the invoked method.</param>
-            public static void BeginInvoke(Delegate action, object arg)
+            public static void BeginInvoke(Delegate action, object? arg)
             {
                 if (action is null)
                     throw new ArgumentNullException(nameof(action));

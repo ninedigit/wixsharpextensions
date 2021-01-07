@@ -4,7 +4,7 @@ namespace NineDigit.WixSharpExtensions
 {
     public static class ArrayExtensions
     {
-        public static T[] JoinWith<T>(this T[] left, T[] right)
+        public static T[]? JoinWith<T>(this T[] left, T[] right)
         {
             if (left is null && right is null)
                 return null;

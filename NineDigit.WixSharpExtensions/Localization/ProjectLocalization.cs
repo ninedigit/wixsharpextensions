@@ -24,10 +24,10 @@ namespace NineDigit.WixSharpExtensions.Localization
         /// <param name="controlPanelInfo">Specify information visible in add/remove programs menu, if they should be localized.</param>
         public ProjectLocalization(
             string language,
-            string localizationFile = null,
-            string downgradeErrorMessage = null,
-            ProjectNameInfo nameInfo = null,
-            ProjectControlPanelInfo controlPanelInfo = null)
+            string? localizationFile = null,
+            string? downgradeErrorMessage = null,
+            ProjectNameInfo? nameInfo = null,
+            ProjectControlPanelInfo? controlPanelInfo = null)
             : this(CultureInfo.GetCultureInfo(language), localizationFile, downgradeErrorMessage, nameInfo, controlPanelInfo)
         {
         }
@@ -46,10 +46,10 @@ namespace NineDigit.WixSharpExtensions.Localization
         /// <param name="controlPanelInfo">Specify information visible in add/remove programs menu, if they should be localized.</param>
         public ProjectLocalization(
             CultureInfo cultureInfo,
-            string localizationFile = null,
-            string downgradeErrorMessage = null,
-            ProjectNameInfo nameInfo = null,
-            ProjectControlPanelInfo controlPanelInfo = null)
+            string? localizationFile = null,
+            string? downgradeErrorMessage = null,
+            ProjectNameInfo? nameInfo = null,
+            ProjectControlPanelInfo? controlPanelInfo = null)
             : this(GetNonNullCultureInfo(cultureInfo).Name, GetNonNullCultureInfo(cultureInfo).TextInfo.ANSICodePage.ToString(CultureInfo.InvariantCulture), GetNonNullCultureInfo(cultureInfo).LCID, localizationFile, downgradeErrorMessage, nameInfo, controlPanelInfo)
         {
         }
@@ -70,10 +70,10 @@ namespace NineDigit.WixSharpExtensions.Localization
         public ProjectLocalization(
             string language,
             string codePage,
-            string localizationFile = null,
-            string downgradeErrorMessage = null,
-            ProjectNameInfo nameInfo = null,
-            ProjectControlPanelInfo controlPanelInfo = null)
+            string? localizationFile = null,
+            string? downgradeErrorMessage = null,
+            ProjectNameInfo? nameInfo = null,
+            ProjectControlPanelInfo? controlPanelInfo = null)
             : this(language, codePage, new CultureInfo(language).LCID, localizationFile, downgradeErrorMessage, nameInfo, controlPanelInfo)
         {
         }
@@ -96,10 +96,10 @@ namespace NineDigit.WixSharpExtensions.Localization
             string language,
             string codePage,
             int lcid,
-            string localizationFile = null,
-            string downgradeErrorMessage = null,
-            ProjectNameInfo nameInfo = null,
-            ProjectControlPanelInfo controlPanelInfo = null)
+            string? localizationFile = null,
+            string? downgradeErrorMessage = null,
+            ProjectNameInfo? nameInfo = null,
+            ProjectControlPanelInfo? controlPanelInfo = null)
         {
             if (string.IsNullOrWhiteSpace(language))
                 throw new ArgumentException("Invalid localization language.", nameof(language));
@@ -118,11 +118,11 @@ namespace NineDigit.WixSharpExtensions.Localization
 
         public string Language { get; }
         public string CodePage { get; }
-        public string LocalizationFile { get; }
+        public string? LocalizationFile { get; }
         public int LanguageCodeId { get; }
-        public string DowngradeErrorMessage { get; }
-        public ProjectControlPanelInfo ControlPanelInfo { get; }
-        public ProjectNameInfo NameInfo { get; }
+        public string? DowngradeErrorMessage { get; }
+        public ProjectControlPanelInfo? ControlPanelInfo { get; }
+        public ProjectNameInfo? NameInfo { get; }
 
         internal void BindTo(Project project)
         {

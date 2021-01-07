@@ -8,7 +8,7 @@ namespace NineDigit.WixSharpExtensions.Mvvm
         readonly Action executeMethod;
         readonly Func<bool> canExecuteMethod;
 
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler? CanExecuteChanged;
 
         public DelegateCommand(Action executeMethod)
             : this(executeMethod, () => true)
@@ -34,7 +34,7 @@ namespace NineDigit.WixSharpExtensions.Mvvm
         readonly Action<T> executeMethod;
         readonly Func<T, bool> canExecuteMethod;
 
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler? CanExecuteChanged;
 
         public DelegateCommand(Action<T> executeMethod, Func<T, bool> canExecuteMethod)
         {

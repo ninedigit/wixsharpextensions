@@ -40,7 +40,7 @@ namespace NineDigit.WixSharpExtensions
         /// Programs).
         /// </param>
         /// <returns></returns>
-        public static Bundle SetInfo(this Bundle bundle, Guid upgradeCode, string name, Version version, string iconFilePath = null)
+        public static Bundle SetInfo(this Bundle bundle, Guid upgradeCode, string name, Version version, string? iconFilePath = null)
         {
             if (bundle is null)
                 throw new ArgumentNullException(nameof(bundle));
@@ -191,12 +191,12 @@ namespace NineDigit.WixSharpExtensions
             string fileName,
             string localParentPath,
             string onlineParentPath,
-            WixExpression installCondition = null,
+            WixExpression? installCondition = null,
             bool isRequired = true,
             bool? msiVisibleInAddRemoveProgramsMenu = null,
             bool? msiDisplayInternalUI = null,
-            string exeInstallCommand = null,
-            ExitCodeMap exeExitCodeMap = null)
+            string? exeInstallCommand = null,
+            ExitCodeMap? exeExitCodeMap = null)
             where TPackage : WixSharp.Bootstrapper.Package, new()
         {
             if (bundle is null)
@@ -207,9 +207,11 @@ namespace NineDigit.WixSharpExtensions
                 DownloadUrl = Path.Combine(onlineParentPath, fileName),
                 SourceFile = Path.Combine(localParentPath, fileName),
                 Compressed = false, // set false to left as external payload
-                InstallCondition = installCondition,
                 Vital = isRequired,
             };
+
+            if (installCondition != null)
+                package.InstallCondition = installCondition;
 
             if (package is MsiPackage msiPackage)
             {
@@ -243,12 +245,12 @@ namespace NineDigit.WixSharpExtensions
         public static Bundle AddLocalDependency<TPackage>(
             this Bundle bundle,
             string filePath,
-            WixExpression installCondition = null,
+            WixExpression? installCondition = null,
             bool isRequired = true,
             bool? msiVisibleInAddRemoveProgramsMenu = null,
             bool? msiDisplayInternalUI = null,
-            string exeInstallCommand = null,
-            ExitCodeMap exeExitCodeMap = null)
+            string? exeInstallCommand = null,
+            ExitCodeMap? exeExitCodeMap = null)
             where TPackage : WixSharp.Bootstrapper.Package, new()
         {
             if (bundle is null)
@@ -258,9 +260,11 @@ namespace NineDigit.WixSharpExtensions
             {
                 SourceFile = filePath,
                 Compressed = true, // set true to keep as internal payload
-                InstallCondition = installCondition,
                 Vital = isRequired,
             };
+
+            if (installCondition != null)
+                package.InstallCondition = installCondition;
 
             if (package is MsiPackage msiPackage)
             {
@@ -324,7 +328,7 @@ namespace NineDigit.WixSharpExtensions
         /// <remarks>
         /// https://stackoverflow.com/questions/38567796/how-to-determine-if-asp-net-core-has-been-installed-on-a-windows-server
         /// </remarks>
-        public static Bundle AddRegistrySearchAspNetCoreExists(this Bundle bundle, string destinationVariableName, WixExpression condition = null)
+        public static Bundle AddRegistrySearchAspNetCoreExists(this Bundle bundle, string destinationVariableName, WixExpression? condition = null)
         {
             if (bundle is null)
                 throw new ArgumentNullException(nameof(bundle));
@@ -349,7 +353,7 @@ namespace NineDigit.WixSharpExtensions
         /// <remarks>
         /// https://stackoverflow.com/questions/38567796/how-to-determine-if-asp-net-core-has-been-installed-on-a-windows-server
         /// </remarks>
-        public static Bundle AddRegistrySearchAspNetCoreVersion(this Bundle bundle, string destinationVariableName, WixExpression condition = null)
+        public static Bundle AddRegistrySearchAspNetCoreVersion(this Bundle bundle, string destinationVariableName, WixExpression? condition = null)
         {
             if (bundle is null)
                 throw new ArgumentNullException(nameof(bundle));
@@ -378,7 +382,7 @@ namespace NineDigit.WixSharpExtensions
         /// <param name="dotNetFrameworkReleaseVersionVariableName"></param>
         /// <param name="condition">Condition for evaluating the search. If this evaluates to false, the search is not executed at all.</param>
         /// <returns></returns>
-        public static Bundle AddRegistrySearchForDotNetFrameworkReleaseVersion(this Bundle bundle, string dotNetFrameworkReleaseVersionVariableName, WixExpression condition = null)
+        public static Bundle AddRegistrySearchForDotNetFrameworkReleaseVersion(this Bundle bundle, string dotNetFrameworkReleaseVersionVariableName, WixExpression? condition = null)
         {
             if (bundle is null)
                 throw new ArgumentNullException(nameof(bundle));
@@ -389,7 +393,7 @@ namespace NineDigit.WixSharpExtensions
                 Key = @"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full",
                 Value = "Release",
                 Variable = dotNetFrameworkReleaseVersionVariableName,
-                Condition = condition,
+                Condition = condition!,
                 Result = SearchResult.value
             });
         }
@@ -400,7 +404,7 @@ namespace NineDigit.WixSharpExtensions
         /// <param name="destinationVariableName"></param>
         /// <param name="condition">Condition for evaluating the search. If this evaluates to false, the search is not executed at all.</param>
         /// <returns></returns>
-        public static Bundle AddRegistrySeachWindows10OrNewerDetected(this Bundle bundle, string destinationVariableName, WixExpression condition = null)
+        public static Bundle AddRegistrySeachWindows10OrNewerDetected(this Bundle bundle, string destinationVariableName, WixExpression? condition = null)
         {
             if (bundle is null)
                 throw new ArgumentNullException(nameof(bundle));
@@ -414,7 +418,7 @@ namespace NineDigit.WixSharpExtensions
                 Value = "CurrentMajorVersionNumber",
                 Result = SearchResult.exists,
                 Format = SearchFormat.raw,
-                Condition = condition
+                Condition = condition!
             });
         }
 
@@ -436,8 +440,8 @@ namespace NineDigit.WixSharpExtensions
             RegistryHive root,
             string keyX86,
             string keyX64,
-            string value = null,
-            WixExpression condition = null,
+            string? value = null,
+            WixExpression? condition = null,
             SearchResult? result = null,
             SearchFormat? format = null)
         {

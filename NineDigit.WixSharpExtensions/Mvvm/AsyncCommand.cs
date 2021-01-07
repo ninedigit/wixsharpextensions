@@ -18,17 +18,17 @@ namespace NineDigit.WixSharpExtensions.Mvvm
 
     public sealed class AsyncCommand : IAsyncCommand
     {
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler? CanExecuteChanged;
 
         bool isExecuting;
         readonly Func<Task> execute;
-        readonly Func<bool> canExecute;
-        readonly IErrorHandler errorHandler;
+        readonly Func<bool>? canExecute;
+        readonly IErrorHandler? errorHandler;
 
         public AsyncCommand(
             Func<Task> execute,
-            Func<bool> canExecute = null,
-            IErrorHandler errorHandler = null)
+            Func<bool>? canExecute = null,
+            IErrorHandler? errorHandler = null)
         {
             this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
             this.canExecute = canExecute;
@@ -79,14 +79,14 @@ namespace NineDigit.WixSharpExtensions.Mvvm
 
     public sealed class AsyncCommand<T> : IAsyncCommand<T>
     {
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler? CanExecuteChanged;
 
         bool isExecuting;
         readonly Func<T, Task> execute;
-        readonly Func<T, bool> canExecute;
-        readonly IErrorHandler errorHandler;
+        readonly Func<T, bool>? canExecute;
+        readonly IErrorHandler? errorHandler;
 
-        public AsyncCommand(Func<T, Task> execute, Func<T, bool> canExecute = null, IErrorHandler errorHandler = null)
+        public AsyncCommand(Func<T, Task> execute, Func<T, bool>? canExecute = null, IErrorHandler? errorHandler = null)
         {
             this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
             this.canExecute = canExecute;

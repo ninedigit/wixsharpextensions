@@ -16,7 +16,7 @@ namespace NineDigit.WixSharpExtensions.Localization
         /// <param name="language">Culture info name. Example: "en-US"</param>
         /// <param name="themeWxlFilePath">Path to localized file of UI messages, such as: "{WiX Toolset install location}\SDK\themes\HyperlinkTheme.wxl"</param>
         /// <param name="licenceRtfFilePath">Optional path to licence in RTF format.</param>
-        public BootstrapperAppLocalization(string language, string themeWxlFilePath, string licenceRtfFilePath = null)
+        public BootstrapperAppLocalization(string language, string themeWxlFilePath, string? licenceRtfFilePath = null)
             : this(CultureInfo.GetCultureInfo(language), themeWxlFilePath, licenceRtfFilePath)
         { }
 
@@ -25,7 +25,7 @@ namespace NineDigit.WixSharpExtensions.Localization
         /// <param name="cultureInfo"></param>
         /// <param name="themeWxlFilePath">Path to localized file of UI messages, such as: "{WiX Toolset install location}\SDK\themes\HyperlinkTheme.wxl"</param>
         /// <param name="licenceRtfFilePath">Optional path to licence in RTF format.</param>
-        public BootstrapperAppLocalization(CultureInfo cultureInfo, string themeWxlFilePath, string licenceRtfFilePath = null)
+        public BootstrapperAppLocalization(CultureInfo cultureInfo, string themeWxlFilePath, string? licenceRtfFilePath = null)
             : this(GetNonNullCultureInfo(cultureInfo).LCID, themeWxlFilePath, licenceRtfFilePath)
         { }
 
@@ -34,7 +34,7 @@ namespace NineDigit.WixSharpExtensions.Localization
         /// <param name="languageCodeId">Language code identifier (LCID). Language codes: https://www.science.co.il/language/Locale-codes.php </param>
         /// <param name="themeWxlFilePath">Path to localized file of UI messages, such as: "{WiX Toolset install location}\SDK\themes\HyperlinkTheme.wxl"</param>
         /// <param name="licenceRtfFilePath">Optional path to licence in RTF format.</param>
-        public BootstrapperAppLocalization(int languageCodeId, string themeWxlFilePath, string licenceRtfFilePath = null)
+        public BootstrapperAppLocalization(int languageCodeId, string themeWxlFilePath, string? licenceRtfFilePath = null)
         {
             this.LanguageCodeId = languageCodeId;
 
@@ -47,7 +47,7 @@ namespace NineDigit.WixSharpExtensions.Localization
 
         public int LanguageCodeId { get; }
         public string ThemeWxlFilePath { get; }
-        public string LicenceRtfFilePath { get; }
+        public string? LicenceRtfFilePath { get; }
 
         internal void BindTo(WixStandardBootstrapperApplication app)
         {

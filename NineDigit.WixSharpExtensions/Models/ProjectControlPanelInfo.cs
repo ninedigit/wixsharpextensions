@@ -19,14 +19,14 @@ namespace NineDigit.WixSharpExtensions
         /// <param name="helpTelephone"></param>
         public ProjectControlPanelInfo(
             string name,
-            string manufacturer,
-            string readme,
-            string comment,
-            string contact,
-            Uri helpUrl,
-            Uri aboutUrl,
-            FileInfo productIconFilePath,
-            string helpTelephone)
+            string? manufacturer,
+            string? readme,
+            string? comment,
+            string? contact,
+            Uri? helpUrl,
+            Uri? aboutUrl,
+            FileInfo? productIconFilePath,
+            string? helpTelephone)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Invalid product name.", nameof(name));
@@ -43,14 +43,14 @@ namespace NineDigit.WixSharpExtensions
         }
 
         public string Name { get; }
-        public string Manufacturer { get; }
-        public string Readme { get; }
-        public string Comments { get; }
-        public string Contact { get; }
-        public Uri HelpUrl { get; }
-        public Uri AboutUrl { get; }
-        FileInfo ProductIconFilePath { get; }
-        public string HelpTelephone { get; }
+        public string? Manufacturer { get; }
+        public string? Readme { get; }
+        public string? Comments { get; }
+        public string? Contact { get; }
+        public Uri? HelpUrl { get; }
+        public Uri? AboutUrl { get; }
+        FileInfo? ProductIconFilePath { get; }
+        public string? HelpTelephone { get; }
 
         public ProjectControlPanelInfo DeepClone()
         {
