@@ -6,8 +6,8 @@
     <Nullable>enable</Nullable>
 
     <!-- Version -->
-    <Version>1.0.8</Version>
-    <PackageVersion>1.0.8</PackageVersion>
+    <Version>1.0.9</Version>
+    <PackageVersion>1.0.9</PackageVersion>
     <PackageReleaseNotes></PackageReleaseNotes>
 
     <!-- NuGet meta -->
