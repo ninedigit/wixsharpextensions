@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFramework>net452</TargetFramework>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
 
     <!-- Version -->
-    <Version>1.0.10</Version>
-    <PackageVersion>1.0.10</PackageVersion>
+    <Version>1.0.11</Version>
+    <PackageVersion>1.0.11</PackageVersion>
     <PackageReleaseNotes></PackageReleaseNotes>
 
     <!-- NuGet meta -->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Nine Digit, s.r.o.</Authors>
-    <Copyright>(c) 2021</Copyright>
+    <Copyright>(c) 2022</Copyright>
     <PackageTags>wix wix-toolset msi csharp-library wixsharp</PackageTags>
     <Title>WixSharp extensions</Title>
     <RepositoryUrl>https://github.com/ninedigit/wixsharpextensions</RepositoryUrl>
@@ -27,12 +27,12 @@
     <None Remove="NineDigit.WixSharpExtensions.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="WixSharp">
-      <Version>1.18.0</Version>
+      <Version>1.19.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -41,4 +41,15 @@
     <Reference Include="System.Windows" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
+
+	<!-- Release build -->
+	<Target Name="SigningTarget" AfterTargets="CoreBuild" Condition="'$(Configuration)' == 'Release'">
+		<Message Text="[1/2] Assembly signing ..." Importance="high" />
+		<SignFile CertificateThumbprint="013ee19d74663110a1cf565f66080c501cd7c2cd" SigningTarget="$(ProjectDir)$(OutputPath)$(AssemblyName).dll" TimestampUrl="http://timestamp.digicert.com?td=sha256" />
+	</Target>
+
+	<Target Name="SignPackage" AfterTargets="_PackAsBuildAfterTarget">
+		<Message Text="[2/2] NuGet package signing ..." Importance="high" />
+		<Exec Command="nuget sign $(ProjectDir)$(BaseOutputPath)$(Configuration)\$(AssemblyName).$(InformationalVersion).nupkg -CertificateFingerprint &quot;013ee19d74663110a1cf565f66080c501cd7c2cd&quot; -Timestamper http://timestamp.digicert.com?td=sha256" />
+	</Target>
 </Project>

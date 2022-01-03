@@ -320,10 +320,47 @@ namespace NineDigit.WixSharpExtensions
         }
 
         /// <summary>
+        /// Gets whether specific version of ASP.NET Core is installed.
         /// </summary>
         /// <param name="bundle"></param>
-        /// <param name="destinationVariableName"></param>
-        /// <param name="condition"></param>
+        /// <param name="aspNetCoreVersion">Version with major and minor segments only. Example: 2.2, 3.1, 5.0, 6.0, etc.</param>
+        /// <param name="destinationVariableName">Name of the variable, that will be result of search saved to.</param>
+        /// <param name="condition">Condition for evaluating the search. If this evaluates to false, the search is not executed at all.</param>
+        /// <returns>Same instance for chaining.</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        public static Bundle AddRegistrySearchAspNetCoreInstalled(this Bundle bundle, Version aspNetCoreVersion, string destinationVariableName, WixExpression? condition = null)
+        {
+            if (bundle is null)
+                throw new ArgumentNullException(nameof(bundle));
+            
+            if (aspNetCoreVersion is null)
+                throw new ArgumentNullException(nameof(aspNetCoreVersion));
+            
+            if (aspNetCoreVersion.Revision != -1 || aspNetCoreVersion.Build != -1)
+                throw new ArgumentException("First two segments of ASP.NET Core version is allowed.");
+
+            if (string.IsNullOrWhiteSpace(destinationVariableName))
+                throw new ArgumentException($"'{nameof(destinationVariableName)}' cannot be null or whitespace.", nameof(destinationVariableName));
+
+            return bundle.AddRegistrySearch(new UtilRegistrySearch()
+            {
+                Variable = destinationVariableName,
+                Root =  RegistryHive.LocalMachine,
+                Key = @"SOFTWARE\Microsoft\ASP.NET Core\Shared Framework\v" + aspNetCoreVersion.ToString(2),
+                Value = null,
+                Condition = condition!,
+                Result = SearchResult.exists,
+                Format = SearchFormat.raw,
+            });
+        }
+
+        /// <summary>
+        /// Gets whehter any version of ASP.NET Core is installed.
+        /// </summary>
+        /// <param name="bundle"></param>
+        /// <param name="destinationVariableName">Name of the variable, that will be result of search saved to.</param>
+        /// <param name="condition">Condition for evaluating the search. If this evaluates to false, the search is not executed at all.</param>
         /// <returns></returns>
         /// <remarks>
         /// https://stackoverflow.com/questions/38567796/how-to-determine-if-asp-net-core-has-been-installed-on-a-windows-server
@@ -345,9 +382,11 @@ namespace NineDigit.WixSharpExtensions
         }
 
         /// <summary>
+        /// Gets newest version of ASP.NET Core installed.
+        /// If multiple versions of ASP.NET Core is installed on the machine, newest version is returned.
         /// </summary>
         /// <param name="bundle"></param>
-        /// <param name="destinationVariableName"></param>
+        /// <param name="destinationVariableName">Name of the variable, that will be result of search saved to.</param>
         /// <param name="condition">Condition for evaluating the search. If this evaluates to false, the search is not executed at all.</param>
         /// <returns></returns>
         /// <remarks>
