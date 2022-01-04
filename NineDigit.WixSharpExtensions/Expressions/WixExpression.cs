@@ -18,6 +18,11 @@ namespace NineDigit.WixSharpExtensions.Expressions
             this.value = value;
         }
 
+        public WixExpression(int value)
+            : this(value.ToString())
+        {
+        }
+
         private string ValueWithParentheses
             => this.value.Contains(" ") ? $"({this.value})" : this.value;
 

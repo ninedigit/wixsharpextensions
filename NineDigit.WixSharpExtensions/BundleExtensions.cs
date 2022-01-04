@@ -320,6 +320,35 @@ namespace NineDigit.WixSharpExtensions
         }
 
         /// <summary>
+        /// Adds registry search for OS Build version.
+        /// </summary>
+        /// <param name="bundle"></param>
+        /// <param name="destinationVariableName">Name of the variable in which the value will be stored.</param>
+        /// <param name="condition">Condition for evaluating the search. If this evaluates to false, the search is not executed at all.</param>
+        /// <returns>Same instance for chaining.</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        public static Bundle AddRegistrySearchForOsBuildVersion(this Bundle bundle, string destinationVariableName, WixExpression? condition = null)
+        {
+            if (bundle is null)
+                throw new ArgumentNullException(nameof(bundle));
+
+            if (string.IsNullOrWhiteSpace(destinationVariableName))
+                throw new ArgumentException($"'{nameof(destinationVariableName)}' cannot be null or whitespace.", nameof(destinationVariableName));
+
+            return bundle.AddRegistrySearch(new UtilRegistrySearch()
+            {
+                Variable = destinationVariableName,
+                Root = RegistryHive.LocalMachine,
+                Key = @"SOFTWARE\Microsoft\Windows NT\CurrentVersion",
+                Value = "CurrentBuild",
+                Condition = condition!,
+                Result = SearchResult.value,
+                Format = SearchFormat.raw,
+            });
+        }
+
+        /// <summary>
         /// Gets whether specific version of ASP.NET Core is installed.
         /// </summary>
         /// <param name="bundle"></param>
