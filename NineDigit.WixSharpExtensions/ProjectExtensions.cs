@@ -382,7 +382,6 @@ namespace NineDigit.WixSharpExtensions
                     SecondFailureActionType = secondFailureActionType,
                     ThirdFailureActionType = thirdFailureActionType,
                     DependsOn = dependsOn,
-                    ComponentCondition = serviceFile.ComponentCondition
                 };
 
                 serviceFile.FirewallExceptions = new[]
@@ -392,7 +391,6 @@ namespace NineDigit.WixSharpExtensions
                         Name = name,
                         Description = description,
                         Scope = FirewallExceptionScope.any,
-                        ComponentCondition = serviceFile.ComponentCondition
                     }
                 };
             }
