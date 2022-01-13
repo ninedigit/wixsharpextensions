@@ -6,8 +6,8 @@
     <Nullable>enable</Nullable>
 
     <!-- Version -->
-    <Version>1.0.11.3</Version>
-    <PackageVersion>1.0.11.3</PackageVersion>
+    <Version>1.0.12</Version>
+    <PackageVersion>1.0.12</PackageVersion>
     <PackageReleaseNotes></PackageReleaseNotes>
 
     <!-- NuGet meta -->
@@ -45,11 +45,11 @@
 	<!-- Release build -->
 	<Target Name="SigningTarget" AfterTargets="CoreBuild" Condition="'$(Configuration)' == 'Release'">
 		<Message Text="[1/2] Assembly signing ..." Importance="high" />
-		<SignFile CertificateThumbprint="013ee19d74663110a1cf565f66080c501cd7c2cd" SigningTarget="$(ProjectDir)$(OutputPath)$(AssemblyName).dll" TimestampUrl="http://timestamp.digicert.com?td=sha256" />
+		<SignFile CertificateThumbprint="5ba440337c490688906059364d1ee0dbb825e110" SigningTarget="$(ProjectDir)$(OutputPath)$(AssemblyName).dll" TimestampUrl="http://timestamp.digicert.com?td=sha256" />
 	</Target>
 
 	<Target Name="SignPackage" AfterTargets="_PackAsBuildAfterTarget">
 		<Message Text="[2/2] NuGet package signing ..." Importance="high" />
-		<Exec Command="nuget sign $(ProjectDir)$(BaseOutputPath)$(Configuration)\$(AssemblyName).$(InformationalVersion).nupkg -CertificateFingerprint &quot;013ee19d74663110a1cf565f66080c501cd7c2cd&quot; -Timestamper http://timestamp.digicert.com?td=sha256" />
+		<Exec Command="nuget sign $(ProjectDir)$(BaseOutputPath)$(Configuration)\$(AssemblyName).$(InformationalVersion).nupkg -CertificateFingerprint &quot;5ba440337c490688906059364d1ee0dbb825e110&quot; -Timestamper http://timestamp.digicert.com?td=sha256" />
 	</Target>
 </Project>

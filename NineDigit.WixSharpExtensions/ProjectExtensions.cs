@@ -333,52 +333,69 @@ namespace NineDigit.WixSharpExtensions
         /// <param name="displayName"></param>
         /// <param name="description">Service description visible in services list.</param>
         /// <param name="dependsOn">Collection of service dependencies</param>
+        /// <param name="firstFailureActionType">Action to take on the first failure of the service</param>
+        /// <param name="secondFailureActionType">Action to take on the second failure of the service.</param>
+        /// <param name="thirdFailureActionType">Action to take on the third failure of the service.</param>
         /// <returns></returns>
         public static TProject AddWindowsServiceAndFirewallRule<TProject>(this TProject project,
             string executableFileName,
             string name,
             string displayName,
             string description,
-            ServiceDependency[]? dependsOn = null)
+            ServiceDependency[]? dependsOn = null,
+            FailureActionType firstFailureActionType = FailureActionType.none,
+            FailureActionType secondFailureActionType = FailureActionType.none,
+            FailureActionType thirdFailureActionType = FailureActionType.none)
             where TProject : Project
         {
             if (project is null)
                 throw new ArgumentNullException(nameof(project));
 
-            var serviceFile = project
+            var serviceFiles = project
                 .ResolveWildCards() // we need evaluate files specified by mask to get desired .exe file, otherwise the "AllFiles" preoprty would contain empty collection.
                 .AllFiles
-                .SingleOrDefault(i => i.Name.EndsWith(executableFileName, true, CultureInfo.InvariantCulture));
+                .Where(i => i.Name.EndsWith(executableFileName, true, CultureInfo.InvariantCulture))
+                .Distinct()
+                .ToArray();
 
-            if (serviceFile is null)
+            if (serviceFiles.Length == 0)
                 throw new InvalidOperationException("Service file could not be found. Please verify that you specified executable file name with extension and without path. Make sure that AddWindowsService method is called after all files and directories are added to the project definition.");
 
-            serviceFile.ServiceInstaller = new ServiceInstaller
-            {
-                Name = name,
-                DisplayName = displayName,
-                Description = description,
-                ErrorControl = SvcErrorControl.normal,
-                Start = SvcStartType.auto,
-                Type = SvcType.ownProcess,
-                StartOn = SvcEvent.Install_Wait,
-                StopOn = SvcEvent.Uninstall_Wait,
-                RemoveOn = SvcEvent.Uninstall_Wait,
-                ConfigureServiceTrigger = ConfigureServiceTrigger.None,
-                FirstFailureActionType = FailureActionType.restart,
-                SecondFailureActionType = FailureActionType.restart,
-                DependsOn = dependsOn
-            };
+            // if multiple files represents same service, the ServiceConfig element (FirstFailureActionType, SecondFailureActionType and ThirdFailureActionType)
+            // must not be used due to issue in Wix (https://github.com/wixtoolset/issues/issues/5617)
 
-            serviceFile.FirewallExceptions = new[]
+            foreach (var serviceFile in serviceFiles)
             {
-                new FirewallException()
+                serviceFile.ServiceInstaller = new ServiceInstaller
                 {
                     Name = name,
+                    DisplayName = displayName,
                     Description = description,
-                    Scope = FirewallExceptionScope.any
-                }
-            };
+                    ErrorControl = SvcErrorControl.normal,
+                    Start = SvcStartType.auto,
+                    Type = SvcType.ownProcess,
+                    StartOn = SvcEvent.Install_Wait,
+                    StopOn = SvcEvent.Uninstall_Wait,
+                    RemoveOn = SvcEvent.Uninstall_Wait,
+                    ConfigureServiceTrigger = ConfigureServiceTrigger.None,
+                    FirstFailureActionType = firstFailureActionType,
+                    SecondFailureActionType = secondFailureActionType,
+                    ThirdFailureActionType = thirdFailureActionType,
+                    DependsOn = dependsOn,
+                    ComponentCondition = serviceFile.ComponentCondition
+                };
+
+                serviceFile.FirewallExceptions = new[]
+                {
+                    new FirewallException()
+                    {
+                        Name = name,
+                        Description = description,
+                        Scope = FirewallExceptionScope.any,
+                        ComponentCondition = serviceFile.ComponentCondition
+                    }
+                };
+            }
 
             return project;
         }
