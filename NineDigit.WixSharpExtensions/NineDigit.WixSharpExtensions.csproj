@@ -6,8 +6,8 @@
     <Nullable>enable</Nullable>
 
     <!-- Version -->
-    <Version>1.0.12</Version>
-    <PackageVersion>1.0.12</PackageVersion>
+    <Version>1.0.12.1</Version>
+    <PackageVersion>1.0.12.1</PackageVersion>
     <PackageReleaseNotes></PackageReleaseNotes>
 
     <!-- NuGet meta -->
@@ -22,9 +22,12 @@
     <NoWarn>CA1303;CA1030;1701;1702;1591</NoWarn>
     <Description>Extensions for WixSharp library</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+
   </PropertyGroup>
   <ItemGroup>
     <None Remove="NineDigit.WixSharpExtensions.xml" />
+	<None Include="$(SolutionDir)README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
