@@ -6,8 +6,8 @@
     <Nullable>enable</Nullable>
 
     <!-- Version -->
-    <Version>1.0.12.2</Version>
-    <PackageVersion>1.0.12.2</PackageVersion>
+    <Version>1.0.13</Version>
+    <PackageVersion>1.0.13</PackageVersion>
     <PackageReleaseNotes></PackageReleaseNotes>
 
     <!-- NuGet meta -->
@@ -35,7 +35,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="WixSharp">
-      <Version>1.19.0</Version>
+      <Version>1.20.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

@@ -39,7 +39,7 @@ namespace NineDigit.WixSharpExtensions
         /// This icon will also be displayed in Programs and Features (also known as Add/Remove
         /// Programs).
         /// </param>
-        /// <returns></returns>
+        /// <returns>Same instance for chaining.</returns>
         public static Bundle SetInfo(this Bundle bundle, Guid upgradeCode, string name, Version version, string? iconFilePath = null)
         {
             if (bundle is null)
@@ -63,7 +63,7 @@ namespace NineDigit.WixSharpExtensions
         /// Path to a bitmap that will be shown as the bootstrapper application is being
         /// loaded. If this attribute is not specified, no splash screen will be displayed.
         /// </param>
-        /// <returns></returns>
+        /// <returns>Same instance for chaining.</returns>
         public static Bundle SetSplashScreen(this Bundle bundle, string splashScreenBitmapPath)
         {
             if (bundle is null)
@@ -81,7 +81,7 @@ namespace NineDigit.WixSharpExtensions
         /// </summary>
         /// <param name="bundle"></param>
         /// <param name="preserveTempFiles"></param>
-        /// <returns></returns>
+        /// <returns>Same instance for chaining.</returns>
         public static Bundle PreserveTempFiles(this Bundle bundle, bool preserveTempFiles = true)
         {
             if (bundle is null)
@@ -100,7 +100,7 @@ namespace NineDigit.WixSharpExtensions
         /// <param name="signedContentDescription">Description of the product.</param>
         /// <param name="timestampServerUrl">Timestamp server URL</param>
         /// <param name="hashAlgorithm">Hash algorithm</param>
-        /// <returns></returns>
+        /// <returns>Same instance for chaining.</returns>
         public static Bundle SignWithCertificateThumprint(this Bundle bundle,
             string certificateThumbprint,
             string signedContentDescription,
@@ -137,7 +137,7 @@ namespace NineDigit.WixSharpExtensions
         /// Hides an "Options" button from bootstrapper UI.
         /// An hotfix for https://github.com/oleg-shilo/wixsharp/issues/803
         /// </summary>
-        /// <param name="bundle"></param>
+        /// <returns>Same instance for chaining.</returns>
         public static Bundle SuppressApplicationOptionsUI(this Bundle bundle)
         {
             if (bundle is null)
@@ -160,7 +160,7 @@ namespace NineDigit.WixSharpExtensions
         /// Required to use registry searches and many other non-default operations.
         /// </summary>
         /// <param name="bundle"></param>
-        /// <returns></returns>
+        /// <returns>Same instance for chaining.</returns>
         public static Bundle IncludeWixUtilExtension(this Bundle bundle)
         {
             if (bundle is null)
@@ -185,7 +185,7 @@ namespace NineDigit.WixSharpExtensions
         /// <param name="msiDisplayInternalUI">Applied only when TPackage is <see cref="MsiPackage"/>, ignored otherwise.</param>
         /// <param name="exeInstallCommand">Applied only when TPackage is <see cref="ExePackage"/>, ignored otherwise.</param>
         /// <param name="exeExitCodeMap">Applied only when TPackage is <see cref="ExePackage"/>, ignored otherwise.</param>
-        /// <returns></returns>
+        /// <returns>Same instance for chaining.</returns>
         public static Bundle AddOnlineDependency<TPackage>(
             this Bundle bundle,
             string fileName,
@@ -241,7 +241,7 @@ namespace NineDigit.WixSharpExtensions
         /// <param name="msiDisplayInternalUI">Applied only when TPackage is <see cref="MsiPackage"/>, ignored otherwise.</param>
         /// <param name="exeInstallCommand">Applied only when TPackage is <see cref="ExePackage"/>, ignored otherwise.</param>
         /// <param name="exeExitCodeMap">Applied only when TPackage is <see cref="ExePackage"/>, ignored otherwise.</param>
-        /// <returns></returns>
+        /// <returns>Same instance for chaining.</returns>
         public static Bundle AddLocalDependency<TPackage>(
             this Bundle bundle,
             string filePath,
@@ -286,7 +286,7 @@ namespace NineDigit.WixSharpExtensions
         /// Adds rollback boundary to the chain.
         /// </summary>
         /// <param name="bundle"></param>
-        /// <returns></returns>
+        /// <returns>Same instance for chaining.</returns>
         public static Bundle AddRollbackBoundary(this Bundle bundle)
         {
             if (bundle is null)
@@ -301,7 +301,7 @@ namespace NineDigit.WixSharpExtensions
         /// Changes all chain items from online to local dependencies.
         /// </summary>
         /// <param name="bundle"></param>
-        /// <returns></returns>
+        /// <returns>Same instance for chaining.</returns>
         public static Bundle SetAllOnlineDependenciesToLocal(this Bundle bundle)
         {
             if (bundle is null)
@@ -390,7 +390,7 @@ namespace NineDigit.WixSharpExtensions
         /// <param name="bundle"></param>
         /// <param name="destinationVariableName">Name of the variable, that will be result of search saved to.</param>
         /// <param name="condition">Condition for evaluating the search. If this evaluates to false, the search is not executed at all.</param>
-        /// <returns></returns>
+        /// <returns>Same instance for chaining.</returns>
         /// <remarks>
         /// https://stackoverflow.com/questions/38567796/how-to-determine-if-asp-net-core-has-been-installed-on-a-windows-server
         /// </remarks>
@@ -417,7 +417,7 @@ namespace NineDigit.WixSharpExtensions
         /// <param name="bundle"></param>
         /// <param name="destinationVariableName">Name of the variable, that will be result of search saved to.</param>
         /// <param name="condition">Condition for evaluating the search. If this evaluates to false, the search is not executed at all.</param>
-        /// <returns></returns>
+        /// <returns>Same instance for chaining.</returns>
         /// <remarks>
         /// https://stackoverflow.com/questions/38567796/how-to-determine-if-asp-net-core-has-been-installed-on-a-windows-server
         /// </remarks>
@@ -432,6 +432,29 @@ namespace NineDigit.WixSharpExtensions
                 keyX86: @"SOFTWARE\dotnet\Setup\InstalledVersions\x86\sharedhost",
                 keyX64: @"SOFTWARE\dotnet\Setup\InstalledVersions\x64\sharedhost",
                 value: "Version",
+                condition: condition,
+                result: SearchResult.value,
+                format: SearchFormat.raw);
+        }
+
+        /// <summary>
+        /// Adds registry search whether Visual C++ version 2015-2019 (version 14) is installed on the machine.
+        /// </summary>
+        /// <param name="bundle"></param>
+        /// <param name="destinationVariableName">Name of the variable, that will be result of search saved to.</param>
+        /// <param name="condition">Condition for evaluating the search. If this evaluates to false, the search is not executed at all.</param>
+        /// <returns>Same instance for chaining.</returns>
+        public static Bundle AddRegistrySearchForVisualCpp14Installed(this Bundle bundle, string destinationVariableName, WixExpression? condition = null)
+        {
+            if (bundle is null)
+                throw new ArgumentNullException(nameof(bundle));
+
+            return bundle.AddRegistrySearchFor64And86(
+                destinationVariableName: destinationVariableName,
+                root: RegistryHive.LocalMachine,
+                keyX86: @"SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\X86",
+                keyX64: @"SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\X64",
+                value: "Installed",
                 condition: condition,
                 result: SearchResult.value,
                 format: SearchFormat.raw);
@@ -471,7 +494,7 @@ namespace NineDigit.WixSharpExtensions
         /// <param name="bundle"></param>
         /// <param name="destinationVariableName"></param>
         /// <param name="condition">Condition for evaluating the search. If this evaluates to false, the search is not executed at all.</param>
-        /// <returns></returns>
+        /// <returns>Same instance for chaining.</returns>
         public static Bundle AddRegistrySeachWindows10OrNewerDetected(this Bundle bundle, string destinationVariableName, WixExpression? condition = null)
         {
             if (bundle is null)
@@ -502,7 +525,7 @@ namespace NineDigit.WixSharpExtensions
         /// <param name="condition">Condition for evaluating the search. If this evaluates to false, the search is not executed at all.</param>
         /// <param name="result"></param>
         /// <param name="format"></param>
-        /// <returns></returns>
+        /// <returns>Same instance for chaining.</returns>
         public static Bundle AddRegistrySearchFor64And86(this Bundle bundle,
             string destinationVariableName,
             RegistryHive root,
@@ -550,7 +573,7 @@ namespace NineDigit.WixSharpExtensions
         /// </summary>
         /// <param name="bundle"></param>
         /// <param name="utilRegistrySearch"></param>
-        /// <returns></returns>
+        /// <returns>Same instance for chaining.</returns>
         public static Bundle AddRegistrySearch(this Bundle bundle, UtilRegistrySearch utilRegistrySearch)
         {
             if (bundle is null)
@@ -569,7 +592,7 @@ namespace NineDigit.WixSharpExtensions
         /// It is still possible to to configure show/hide its chain items separately.
         /// </summary>
         /// <param name="bundle"></param>
-        /// <returns></returns>
+        /// <returns>Same instance for chaining.</returns>
         public static Bundle HideFromAddRemovePrograms(this Bundle bundle)
             => bundle.SetAddRemoveProgramsButtons(AddRemoveProgramsButtonMode.None);
 
@@ -578,7 +601,7 @@ namespace NineDigit.WixSharpExtensions
         /// </summary>
         /// <param name="bundle"></param>
         /// <param name="mode"></param>
-        /// <returns></returns>
+        /// <returns>Same instance for chaining.</returns>
         public static Bundle SetAddRemoveProgramsButtons(this Bundle bundle, AddRemoveProgramsButtonMode mode)
         {
             if (bundle is null)
