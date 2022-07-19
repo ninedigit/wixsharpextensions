@@ -1,5 +1,4 @@
-﻿using NineDigit.WixSharpExtensions.Builders;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using WixSharp;
@@ -73,7 +72,11 @@ namespace NineDigit.WixSharpExtensions
             throw new InvalidOperationException("Could not get assembly file version.");
         }
 
-        public Files[] GetFiles()
-            => new X86AndX64FileBuilder(this.x86BuildDirectoryPath, this.x64BuildDirectoryPath).Build();
+        /// <summary>
+        /// </summary>
+        /// <param name="filter">Optional filter to be applied for every file to be evaluated for the inclusion into MSI. Example: <code>(filePath, tileType) => !filePath.EndsWith(".Test.dll")</code></param>
+        /// <returns></returns>
+        public Files[] GetFiles(Func<string, FileBuildTypes, bool>? filter = null)
+            => new X86AndX64FileBuilder(this.x86BuildDirectoryPath, this.x64BuildDirectoryPath).Build(filter);
     }
 }

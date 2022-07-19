@@ -4,31 +4,31 @@ using System.Collections.Generic;
 using System.IO;
 using WixSharp;
 
-namespace NineDigit.WixSharpExtensions.Builders
+namespace NineDigit.WixSharpExtensions
 {
+    [Flags]
+    public enum FileBuildTypes
+    {
+        /// <summary>
+        /// Same file is part of X86 and X64 build.
+        /// </summary>
+        Common = 1,
+        /// <summary>
+        /// Different files with matching names are part of both X86 and X64 build.
+        /// </summary>
+        BuildSpecific = 2,
+        /// <summary>
+        /// File is part of X86 build only.
+        /// </summary>
+        X86BuildOnly = 4,
+        /// <summary>
+        /// File is part of X64 build only.
+        /// </summary>
+        X64BuildOnly = 8
+    }
+
     public sealed class X86AndX64FileBuilder
     {
-        [Flags]
-        enum FileBuildTypes
-        {
-            /// <summary>
-            /// Same file is part of X86 and X64 build.
-            /// </summary>
-            Common = 1,
-            /// <summary>
-            /// Different files with matching names are part of both X86 and X64 build.
-            /// </summary>
-            BuildSpecific = 2,
-            /// <summary>
-            /// File is part of X86 build only.
-            /// </summary>
-            X86BuildOnly = 4,
-            /// <summary>
-            /// File is part of X64 build only.
-            /// </summary>
-            X64BuildOnly = 8
-        }
-
         readonly string x86BuildDirectoryPath;
         readonly string x64BuildDirectoryPath;
         readonly IDictionary<string, string> x86BuildFiles;
@@ -101,8 +101,14 @@ namespace NineDigit.WixSharpExtensions.Builders
         private bool IsFileBuildType(string filePath, FileBuildTypes types)
             => (GetFileBuildType(filePath) & types) != 0;
 
-        public Files[] Build()
+        /// <summary>
+        /// </summary>
+        /// <param name="filter">Optional filter to be applied for every file to be evaluated for the inclusion into MSI. Example: <code>(filePath, tileType) => !filePath.EndsWith(".Test.dll")</code></param>
+        /// <returns></returns>
+        public Files[] Build(Func<string, FileBuildTypes, bool>? filter = null)
         {
+            filter ??= (f, t) => true;
+            
             var is32BitOsCondition = new Condition(WixExpression.Is32BitOS());
             var is64BitOsCondition = new Condition(WixExpression.Is64BitOS());
 
@@ -111,12 +117,12 @@ namespace NineDigit.WixSharpExtensions.Builders
                 // common files
                 new Files(
                     sourcePath: Path.Combine(this.x86BuildDirectoryPath, "*.*"),
-                    filter: (filePath) => IsFileBuildType(filePath, FileBuildTypes.Common)),
+                    filter: (filePath) => IsFileBuildType(filePath, FileBuildTypes.Common) && filter(filePath, FileBuildTypes.Common)),
 
                 // x86-specific
                 new Files(
                     sourcePath: Path.Combine(this.x86BuildDirectoryPath, "*.*"),
-                    filter: (filePath) => IsFileBuildType(filePath, FileBuildTypes.BuildSpecific | FileBuildTypes.X86BuildOnly))
+                    filter: (filePath) => IsFileBuildType(filePath, FileBuildTypes.BuildSpecific | FileBuildTypes.X86BuildOnly) && filter(filePath, FileBuildTypes.BuildSpecific | FileBuildTypes.X86BuildOnly))
                 {
                     OnProcess = (wixFile) => wixFile.Condition = is32BitOsCondition
                 },
@@ -124,7 +130,7 @@ namespace NineDigit.WixSharpExtensions.Builders
                 // x64-specific
                 new Files(
                     sourcePath: Path.Combine(this.x64BuildDirectoryPath, "*.*"),
-                    filter: (filePath) => IsFileBuildType(filePath, FileBuildTypes.BuildSpecific | FileBuildTypes.X64BuildOnly))
+                    filter: (filePath) => IsFileBuildType(filePath, FileBuildTypes.BuildSpecific | FileBuildTypes.X64BuildOnly) && filter(filePath, FileBuildTypes.BuildSpecific | FileBuildTypes.X64BuildOnly))
                 {
                     OnProcess = (wixFile) => wixFile.Condition = is64BitOsCondition
                 }
