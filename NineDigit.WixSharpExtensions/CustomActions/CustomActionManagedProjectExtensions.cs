@@ -13,6 +13,16 @@ namespace NineDigit.WixSharpExtensions
         /// <typeparam name="TCustomAction"></typeparam>
         /// <param name="project"></param>
         /// <returns></returns>
+        public static ManagedProject BindCustomActionIf<TCustomAction>(this ManagedProject project, bool condition)
+            where TCustomAction : CustomAction, new()
+            => condition ? BindCustomAction(project, new TCustomAction()) : project;
+
+        /// <summary>
+        /// Binds custom action to the <paramref name="project"/>.
+        /// </summary>
+        /// <typeparam name="TCustomAction"></typeparam>
+        /// <param name="project"></param>
+        /// <returns></returns>
         public static ManagedProject BindCustomAction<TCustomAction>(this ManagedProject project)
             where TCustomAction : CustomAction, new()
             => BindCustomAction(project, new TCustomAction());
@@ -68,8 +78,7 @@ namespace NineDigit.WixSharpExtensions
             if (string.IsNullOrWhiteSpace(assemblyPath))
                 throw new ArgumentException("Invalid assembly path.", nameof(assemblyPath));
 
-            if (project.DefaultRefAssemblies is null)
-                project.DefaultRefAssemblies = new List<string>();
+            project.DefaultRefAssemblies ??= new List<string>();
 
             if (!project.DefaultRefAssemblies.Any(i => i.Equals(assemblyPath, StringComparison.InvariantCultureIgnoreCase)))
                 project.DefaultRefAssemblies.Add(assemblyPath);

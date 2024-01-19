@@ -135,9 +135,7 @@ namespace NineDigit.WixSharpExtensions.Localization
 
             if (!string.IsNullOrWhiteSpace(this.DowngradeErrorMessage))
             {
-                if (project.MajorUpgrade is null)
-                    project.MajorUpgrade = new MajorUpgrade();
-
+                project.MajorUpgrade ??= new MajorUpgrade();
                 project.MajorUpgrade.DowngradeErrorMessage = this.DowngradeErrorMessage;
             }
 

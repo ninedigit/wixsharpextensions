@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using WixSharp;
@@ -14,7 +15,7 @@ namespace NineDigit.WixSharpExtensions
         /// </summary>
         /// <param name="x86BuildDirectoryPath">Directory path that contains X86 build - including single .EXE file.</param>
         /// <param name="x64BuildDirectoryPath">Directory path that contains X64 build - including single .EXE file.</param>
-        public X86AndX64BuildHelper(string x86BuildDirectoryPath, string x64BuildDirectoryPath)
+        public X86AndX64BuildHelper(string x86BuildDirectoryPath, string x64BuildDirectoryPath, string exeFileName)
         {
             if (string.IsNullOrWhiteSpace(x86BuildDirectoryPath))
                 throw new ArgumentException($"'{nameof(x86BuildDirectoryPath)}' cannot be null or whitespace", nameof(x86BuildDirectoryPath));
@@ -28,18 +29,12 @@ namespace NineDigit.WixSharpExtensions
             this.x86BuildDirectoryPath = x86BuildDirectoryPath;
             this.x64BuildDirectoryPath = x64BuildDirectoryPath;
 
-            var x86ExeFilePath = GetExecutableFilePath(this.x86BuildDirectoryPath);
-            var x86ExeFileName = Path.GetFileName(x86ExeFilePath);
-            var x64ExeFilePath = GetExecutableFilePath(this.x64BuildDirectoryPath);
-            var x64ExeFileName = Path.GetFileName(x64ExeFilePath);
-
-            if (Path.GetFileName(x86ExeFileName) != x64ExeFileName)
-                throw new InvalidOperationException($"Executable file names mismatch between X86 build ({x86ExeFileName}) and X64 build ({x64ExeFileName})");
-
-            this.ExecutableFileName = x64ExeFileName;
-
-            var x86ExeFileVersion = GetExecutableOrDllVersion(x86ExeFilePath);
-            var x64ExeFileVersion = GetExecutableOrDllVersion(x64ExeFilePath);
+            this.ExecutableFileName = exeFileName;
+            
+            var x86ExeFilePath = Path.Combine(this.x86BuildDirectoryPath, exeFileName);
+            var x64ExeFilePath = Path.Combine(this.x64BuildDirectoryPath, exeFileName);
+            var x86ExeFileVersion = GetExecutableVersion(x86ExeFilePath);
+            var x64ExeFileVersion = GetExecutableVersion(x64ExeFilePath);
 
             if (x86ExeFileVersion != x64ExeFileVersion)
                 throw new InvalidOperationException($"Version mismatch between X86 build ({x86ExeFileVersion}) and X64 build ({x64ExeFileVersion})");
@@ -61,16 +56,8 @@ namespace NineDigit.WixSharpExtensions
             return executableAssemblyFileNameCandidates[0];
         }
 
-        private static Version GetExecutableOrDllVersion(string executableFilePath)
-        {
-            if (FileHelper.TryGetAssemblyFileVersion(executableFilePath, out Version? version) ||
-                FileHelper.TryGetAssemblyFileVersion(executableFilePath.PathChangeExtension(".dll"), out version))
-            {
-                return version!;
-            }
-
-            throw new InvalidOperationException("Could not get assembly file version.");
-        }
+        private static Version GetExecutableVersion(string executableFilePath)
+            => Version.Parse(FileVersionInfo.GetVersionInfo(executableFilePath).ProductVersion);
 
         /// <summary>
         /// </summary>

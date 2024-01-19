@@ -52,6 +52,27 @@ namespace NineDigit.WixSharpExtensions
             return project;
         }
 
+        public static TProject Configure<TProject>(this TProject project, Action<TProject> configure)
+            where TProject : Project
+        {
+            configure(project);
+            return project;
+        }
+        public static TProject SetPlatform<TProject>(this TProject project, Platform? platform)
+            where TProject : Project
+        {
+            project.Platform = platform;
+            return project;
+        }
+
+        public static TProject SetPlatformIfNotNull<TProject>(this TProject project, Platform? platform)
+            where TProject : Project
+        {
+            if (platform != null)
+                project.Platform = platform;
+            return project;
+        }
+
         /// <summary>
         /// Sets basic project info.
         /// </summary>
@@ -96,7 +117,7 @@ namespace NineDigit.WixSharpExtensions
                 throw new ArgumentNullException(nameof(projectName));
             if (version is null)
                 throw new ArgumentNullException(nameof(version));
-            if (version.Revision != default)
+            if (version.Revision > 0)
                 throw new ArgumentException("Version must not contain revision. Only first three parts (major, minor and build) are supported by Wix.", nameof(version));
 
             project.GUID = upgradeCode;
