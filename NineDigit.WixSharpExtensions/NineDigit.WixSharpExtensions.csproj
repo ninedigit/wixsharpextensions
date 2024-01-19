@@ -44,15 +44,4 @@
     <Reference Include="System.Windows" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
-
-	<!-- Release build -->
-	<Target Name="SigningTarget" AfterTargets="CoreBuild" Condition="'$(Configuration)' == 'Release'">
-		<Message Text="[1/2] Assembly signing ..." Importance="high" />
-		<SignFile CertificateThumbprint="5ba440337c490688906059364d1ee0dbb825e110" SigningTarget="$(ProjectDir)$(OutputPath)$(AssemblyName).dll" TimestampUrl="http://timestamp.digicert.com?td=sha256" />
-	</Target>
-
-	<Target Name="SignPackage" AfterTargets="_PackAsBuildAfterTarget">
-		<Message Text="[2/2] NuGet package signing ..." Importance="high" />
-		<Exec Command="nuget sign $(ProjectDir)$(BaseOutputPath)$(Configuration)\$(AssemblyName).$(InformationalVersion).nupkg -CertificateFingerprint &quot;5ba440337c490688906059364d1ee0dbb825e110&quot; -Timestamper http://timestamp.digicert.com?td=sha256" />
-	</Target>
 </Project>
