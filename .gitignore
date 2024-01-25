@@ -355,3 +355,4 @@ MigrationBackup/
 # End of https://www.gitignore.io/api/csharp
 
 /NineDigit.WixSharpExtensions/NineDigit.WixSharpExtensions.xml
+/._NineDigit.WixSharpExtensions.sln
