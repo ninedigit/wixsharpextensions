@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using WixSharp;
 
 namespace NineDigit.WixSharpExtensions
@@ -13,8 +12,9 @@ namespace NineDigit.WixSharpExtensions
 
         /// <summary>
         /// </summary>
-        /// <param name="x86BuildDirectoryPath">Directory path that contains X86 build - including single .EXE file.</param>
-        /// <param name="x64BuildDirectoryPath">Directory path that contains X64 build - including single .EXE file.</param>
+        /// <param name="x86BuildDirectoryPath">Directory path that contains x86 build.</param>
+        /// <param name="x64BuildDirectoryPath">Directory path that contains x64 build.</param>
+        /// <param name="exeFileName">Name of executable file. E.g. myApp.exe</param>
         public X86AndX64BuildHelper(string x86BuildDirectoryPath, string x64BuildDirectoryPath, string exeFileName)
         {
             if (string.IsNullOrWhiteSpace(x86BuildDirectoryPath))
@@ -44,17 +44,6 @@ namespace NineDigit.WixSharpExtensions
 
         public Version Version { get; }
         public string ExecutableFileName { get; }
-
-        private static string GetExecutableFilePath(string directoryName)
-        {
-            var executableAssemblyFileNameCandidates = Directory.GetFiles(directoryName, "*.exe", SearchOption.TopDirectoryOnly).Where(i => i.EndsWith(".exe", ignoreCase: true)).ToList();
-            if (executableAssemblyFileNameCandidates.Count == 0)
-                throw new InvalidOperationException($"No .exe assembly found in directory {directoryName}.");
-            if (executableAssemblyFileNameCandidates.Count > 1)
-                throw new InvalidOperationException($"More than one .exe assembly found in directory {directoryName}.");
-
-            return executableAssemblyFileNameCandidates[0];
-        }
 
         private static Version GetExecutableVersion(string executableFilePath)
             => Version.Parse(FileVersionInfo.GetVersionInfo(executableFilePath).ProductVersion);

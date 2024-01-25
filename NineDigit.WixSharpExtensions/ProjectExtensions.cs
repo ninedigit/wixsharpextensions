@@ -200,9 +200,7 @@ namespace NineDigit.WixSharpExtensions
             if (string.IsNullOrWhiteSpace(downgradeErrorMessage))
                 throw new ArgumentException("Downgrade error message must be specified.", nameof(downgradeErrorMessage));
 
-            if (project.MajorUpgrade is null)
-                project.MajorUpgrade = new MajorUpgrade();
-
+            project.MajorUpgrade ??= new MajorUpgrade();
             project.MajorUpgrade.DowngradeErrorMessage = downgradeErrorMessage;
 
             return project;
@@ -219,9 +217,7 @@ namespace NineDigit.WixSharpExtensions
             if (project is null)
                 throw new ArgumentNullException(nameof(project));
 
-            if (project.Media is null)
-                project.Media = new List<Media>();
-
+            project.Media ??= new List<Media>();
             project.Media.Add(new Media() { EmbedCab = true });
 
             return project;
@@ -231,7 +227,7 @@ namespace NineDigit.WixSharpExtensions
         /// Signs the product MSI with certificate described by its thumprint.
         /// </summary>
         /// <typeparam name="TProject"></typeparam>
-        /// <param name="project"></param>
+        /// s<param name="project"></param>
         /// <param name="certificateThumbprint">Certificate thumprint.</param>
         /// <param name="signedContentDescription">Description of the product.</param>
         /// <param name="timestampServerUrl">Timestamp server URL</param>

@@ -13,13 +13,11 @@ namespace NineDigit.WixSharpExtensions
         /// <returns></returns>
         public static byte[] GetFileHash(string filePath)
         {
-            using (var hashAlgorithm = SHA256.Create())
-            {
-                using (var stream = System.IO.File.OpenRead(filePath))
-                {
-                    return hashAlgorithm.ComputeHash(stream);
-                }
-            }
+            using var hashAlgorithm = SHA256.Create();
+            
+            using var stream = System.IO.File.OpenRead(filePath);
+            
+            return hashAlgorithm.ComputeHash(stream);
         }
 
         public static string GetFileHashString(string filePath)
