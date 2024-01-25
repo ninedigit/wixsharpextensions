@@ -14,7 +14,6 @@ namespace NineDigit.WixSharpExtensions
         /// <returns></returns>
         public static string SignWithCodeSignTool(this string fileToSign, SignToolSignOptions signOptions)
         {
-            // CodeSignTool sign -input_file_path=$(ProjectDir)$(OutputPath)$(AssemblyName).exe -credential_id=$(CodeSignToolCredentialId) -username $(CodeSignToolUserName) -password &quot;$(CodeSignToolPassword)&quot; -override -totp_secret=&quot;$(CodeSignToolTotpSecret)&quot;"
             var args = $"sign -input_file_path=\"{fileToSign}\" -username \"{signOptions.UserName}\" -password \"{signOptions.Password}\" -override -totp_secret=\"{signOptions.TotpSecret}\"";
             
             if (!string.IsNullOrWhiteSpace(signOptions.CredentialId))
