@@ -412,6 +412,10 @@ namespace NineDigit.WixSharpExtensions
                 };
             }
 
+            // TODO: vNext, add unique "Id" tag for every ServiceConfig element
+            // see: https://github.com/wixtoolset/issues/issues/5617
+            //project.WixSourceFormated += (ref string xmlContent) => {};
+
             return project;
         }
     }
