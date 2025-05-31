@@ -70,10 +70,10 @@ namespace NineDigit.WixSharpExtensions.Mvvm
         public void RaiseCanExecuteChanged()
             => DispatcherHelper.InvokeOnUI(() => this.CanExecuteChanged?.Invoke(this, EventArgs.Empty));
 
-        bool ICommand.CanExecute(object parameter)
+        bool ICommand.CanExecute(object? parameter)
             => this.CanExecute();
 
-        void ICommand.Execute(object parameter)
+        void ICommand.Execute(object? parameter)
             => this.ExecuteAsync().FireAndForgetSafeAsync(this.errorHandler);
     }
 
@@ -128,10 +128,10 @@ namespace NineDigit.WixSharpExtensions.Mvvm
         public void RaiseCanExecuteChanged()
             => DispatcherHelper.InvokeOnUI(() => this.CanExecuteChanged?.Invoke(this, EventArgs.Empty));
 
-        bool ICommand.CanExecute(object parameter)
-            => CanExecute((T)parameter);
+        bool ICommand.CanExecute(object? parameter)
+            => CanExecute((T)parameter!);
 
-        void ICommand.Execute(object parameter)
-            => this.ExecuteAsync((T)parameter).FireAndForgetSafeAsync(errorHandler);
+        void ICommand.Execute(object? parameter)
+            => this.ExecuteAsync((T)parameter!).FireAndForgetSafeAsync(errorHandler);
     }
 }

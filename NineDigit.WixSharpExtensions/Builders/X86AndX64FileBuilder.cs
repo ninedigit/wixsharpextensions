@@ -85,8 +85,8 @@ namespace NineDigit.WixSharpExtensions
             var x86FilePath = isX86FilePath ? filePath : Path.Combine(this.x86BuildDirectoryPath, filePath.Substring(this.x64BuildDirectoryPath.Length).Trim('\\'));
             var x64FilePath = isX64FilePath ? filePath : Path.Combine(this.x64BuildDirectoryPath, filePath.Substring(this.x86BuildDirectoryPath.Length).Trim('\\'));
 
-            var existsInX86Build = this.x86BuildFiles.TryGetValue(x86FilePath, out string x86FileHash);
-            var existsInX64Build = this.x64BuildFiles.TryGetValue(x64FilePath, out string x64FileHash);
+            var existsInX86Build = this.x86BuildFiles.TryGetValue(x86FilePath, out var x86FileHash);
+            var existsInX64Build = this.x64BuildFiles.TryGetValue(x64FilePath, out var x64FileHash);
 
             if (existsInX86Build && existsInX64Build)
                 return x86FileHash == x64FileHash ? FileBuildTypes.Common : FileBuildTypes.BuildSpecific;

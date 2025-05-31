@@ -43,10 +43,11 @@ namespace NineDigit.WixSharpExtensions
         }
 
         public Version Version { get; }
+        
         public string ExecutableFileName { get; }
 
         private static Version GetExecutableVersion(string executableFilePath)
-            => Version.Parse(FileVersionInfo.GetVersionInfo(executableFilePath).ProductVersion);
+            => Version.Parse(FileVersionInfo.GetVersionInfo(executableFilePath).ProductVersion!);
 
         /// <summary>
         /// </summary>

@@ -5,11 +5,22 @@ namespace NineDigit.WixSharpExtensions
 {
     public sealed class ExitCodeMapBuilder
     {
+
+        private const int DefaultIndex = int.MinValue;
+#if NET8_0
+        readonly IDictionary<int, BehaviorValues> data;
+#else
         readonly IDictionary<int?, BehaviorValues> data;
+#endif
 
         public ExitCodeMapBuilder()
         {
+
+#if NET8_0
+            this.data = new Dictionary<int, BehaviorValues>();
+#else
             this.data = new Dictionary<int?, BehaviorValues>();
+#endif
         }
 
         /// <summary>
@@ -33,7 +44,11 @@ namespace NineDigit.WixSharpExtensions
         /// <returns></returns>
         public ExitCodeMapBuilder AddDefaultResult(BehaviorValues defaultResult)
         {
-            this.data[null] = defaultResult;
+#if NET8_0
+            this.data[DefaultIndex] = defaultResult;
+#else
+            this.data[null!] = defaultResult;
+#endif
             return this;
         }
 

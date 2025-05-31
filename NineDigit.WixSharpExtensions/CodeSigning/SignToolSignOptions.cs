@@ -15,8 +15,10 @@ namespace NineDigit.WixSharpExtensions
         {
             if (string.IsNullOrWhiteSpace(userName))
                 throw new System.ArgumentException($"'{nameof(userName)}' cannot be null or whitespace.", nameof(userName));
+            
             if (string.IsNullOrWhiteSpace(password))
                 throw new System.ArgumentException($"'{nameof(password)}' cannot be null or whitespace.", nameof(password));
+            
             if (string.IsNullOrWhiteSpace(totpSecret))
                 throw new System.ArgumentException($"'{nameof(totpSecret)}' cannot be null or whitespace.", nameof(totpSecret));
 
@@ -68,9 +70,9 @@ namespace NineDigit.WixSharpExtensions
             var xmlDocument = new XmlDocument();
             xmlDocument.Load(filePath);
 
-            var userName = xmlDocument.SelectSingleNode("//Project/PropertyGroup/CodeSignToolUserName")?.InnerText;
-            var password = xmlDocument.SelectSingleNode("//Project/PropertyGroup/CodeSignToolPassword")?.InnerText;
-            var totpSecret = xmlDocument.SelectSingleNode("//Project/PropertyGroup/CodeSignToolTotpSecret")?.InnerText;
+            var userName = xmlDocument.SelectSingleNode("//Project/PropertyGroup/CodeSignToolUserName")?.InnerText!;
+            var password = xmlDocument.SelectSingleNode("//Project/PropertyGroup/CodeSignToolPassword")?.InnerText!;
+            var totpSecret = xmlDocument.SelectSingleNode("//Project/PropertyGroup/CodeSignToolTotpSecret")?.InnerText!;
             var credentialId = xmlDocument.SelectSingleNode("//Project/PropertyGroup/CodeSignToolCredentialId")?.InnerText;
 
             return new SignToolSignOptions(userName, password, totpSecret, credentialId);

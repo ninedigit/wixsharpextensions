@@ -21,12 +21,15 @@ namespace NineDigit.WixSharpExtensions.Mvvm
         }
 
         public void Execute() => this.executeMethod.Invoke();
+        
         public bool CanExecute() => this.canExecuteMethod.Invoke();
+        
         public void RaiseCanExecuteChanged()
             => DispatcherHelper.InvokeOnUI(() => this.CanExecuteChanged?.Invoke(this, EventArgs.Empty));
 
-        bool ICommand.CanExecute(object parameter) => CanExecute();
-        void ICommand.Execute(object parameter) => Execute();
+        bool ICommand.CanExecute(object? parameter) => CanExecute();
+        
+        void ICommand.Execute(object? parameter) => Execute();
     }
 
     public sealed class DelegateCommand<T> : ICommand
@@ -42,12 +45,13 @@ namespace NineDigit.WixSharpExtensions.Mvvm
             this.canExecuteMethod = canExecuteMethod ?? throw new ArgumentNullException(nameof(canExecuteMethod));
         }
 
-        public void Execute(object parameter)
-            => this.executeMethod.Invoke((T)parameter);
+        public void Execute(object? parameter)
+            => this.executeMethod.Invoke((T)parameter!);
 
-        public bool CanExecute(object parameter)
-            => this.canExecuteMethod.Invoke((T)parameter);
-        public void RaiseCanExecudeChanged()
+        public bool CanExecute(object? parameter)
+            => this.canExecuteMethod.Invoke((T)parameter!);
+        
+        public void RaiseCanExecuteChanged()
             => DispatcherHelper.InvokeOnUI(() => this.CanExecuteChanged?.Invoke(this, EventArgs.Empty));
     }
 }

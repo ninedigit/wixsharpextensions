@@ -12,6 +12,7 @@ namespace NineDigit.WixSharpExtensions
         /// </summary>
         /// <typeparam name="TCustomAction"></typeparam>
         /// <param name="project"></param>
+        /// <param name="condition"></param>
         /// <returns></returns>
         public static ManagedProject BindCustomActionIf<TCustomAction>(this ManagedProject project, bool condition)
             where TCustomAction : CustomAction, new()

@@ -28,11 +28,12 @@ namespace NineDigit.WixSharpExtensions.Resources
         public static string GetErrorName(int result)
         {
             FieldInfo[] fields = typeof(ResultWin32).GetFields();
-            
+
+
             foreach (FieldInfo fi in fields)
-                if ((int)fi.GetValue(null) == result)
+                if ((int)fi.GetValue(null)! == result)
                     return fi.Name;
-            
+
             return "";
         }
 

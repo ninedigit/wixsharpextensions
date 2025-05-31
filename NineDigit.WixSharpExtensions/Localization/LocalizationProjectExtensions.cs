@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
+
 using WixSharp;
 using WixSharp.CommonTasks;
 
@@ -31,7 +33,16 @@ namespace NineDigit.WixSharpExtensions.Localization
             if (!localizations.Any())
                 throw new ArgumentException("At least one localization expected", nameof(localizations));
 
-            var torchCmd = Compiler.WixLocation.PathCombine("torch.exe");
+#if NET8_0
+            var wixToolsetPath = Environment.GetEnvironmentVariable("WIXTOOLSET_BIN");
+            if (string.IsNullOrEmpty(wixToolsetPath))
+                wixToolsetPath = Environment.GetEnvironmentVariable("WIX");  // ComCompatibleVersionAttribute with Wix tool
+            if (string.IsNullOrEmpty(wixToolsetPath))
+                throw new InvalidOperationException("WIXTOOLSET_BIN and WIX environment variable is not set.");
+            var torchCmd = System.IO.Path.Combine(wixToolsetPath, "torch.exe");
+#else
+    var torchCmd = Compiler.WixLocation.PathCombine("torch.exe");
+#endif
 
             defaultLocalization.BindTo(project);
 
@@ -45,12 +56,12 @@ namespace NineDigit.WixSharpExtensions.Localization
 
                 localization.BindTo(project);
 
-                var localizedMsiFilePath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(msiFilePath), localization.Language + ".msi");
+                var localizedMsiFilePath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(msiFilePath)!, localization.Language + ".msi");
                 project.BuildMsi(localizedMsiFilePath);
 
                 var localizedMstFilePath = localizedMsiFilePath.PathChangeExtension(".mst");
 
-                Process.Start(torchCmd, $"-p -t language \"{msiFilePath}\" \"{localizedMsiFilePath}\" -out \"{localizedMstFilePath}\"")
+                Process.Start(torchCmd, $"-p -t language \"{msiFilePath}\" \"{localizedMsiFilePath}\" -out \"{localizedMstFilePath}\"")!
                     .WaitForExit();
 
                 // note: file name must be in format "{language}.msi" due to internal wixSharp implementation

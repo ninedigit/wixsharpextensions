@@ -93,15 +93,15 @@ namespace NineDigit.WixSharpExtensions
         }
 
         /// <summary>
-        /// Signs the bundle with certificate described by its thumprint.
+        /// Signs the bundle with certificate described by its thumbprint.
         /// </summary>
         /// <param name="bundle"></param>
-        /// <param name="certificateThumbprint">Certificate thumprint.</param>
+        /// <param name="certificateThumbprint">Certificate thumbprint.</param>
         /// <param name="signedContentDescription">Description of the product.</param>
         /// <param name="timestampServerUrl">Timestamp server URL</param>
         /// <param name="hashAlgorithm">Hash algorithm</param>
         /// <returns>Same instance for chaining.</returns>
-        public static Bundle SignWithCertificateThumprint(this Bundle bundle,
+        public static Bundle SignWithCertificateThumbprint(this Bundle bundle,
             string certificateThumbprint,
             string signedContentDescription,
             Uri timestampServerUrl,
@@ -109,10 +109,13 @@ namespace NineDigit.WixSharpExtensions
         {
             if (bundle is null)
                 throw new ArgumentNullException(nameof(bundle));
+            
             if (string.IsNullOrWhiteSpace(certificateThumbprint))
                 throw new ArgumentException("Invalid certificate thumbprint.", nameof(certificateThumbprint));
+            
             if (string.IsNullOrWhiteSpace(signedContentDescription))
                 throw new ArgumentException("Invalid signed content description.", nameof(signedContentDescription));
+            
             if (timestampServerUrl is null)
                 throw new ArgumentNullException(nameof(timestampServerUrl));
 
@@ -135,7 +138,7 @@ namespace NineDigit.WixSharpExtensions
 
         /// <summary>
         /// Hides an "Options" button from bootstrapper UI.
-        /// An hotfix for https://github.com/oleg-shilo/wixsharp/issues/803
+        /// A hotfix for https://github.com/oleg-shilo/wixsharp/issues/803
         /// </summary>
         /// <returns>Same instance for chaining.</returns>
         public static Bundle SuppressApplicationOptionsUI(this Bundle bundle)
@@ -220,7 +223,11 @@ namespace NineDigit.WixSharpExtensions
             }
             else if (package is ExePackage exePackage)
             {
+#if NET8_0
+                exePackage.InstallArguments = exeInstallCommand;
+#else
                 exePackage.InstallCommand = exeInstallCommand;
+#endif
                 exeExitCodeMap?.BindTo(exePackage);
             }
 
@@ -230,7 +237,7 @@ namespace NineDigit.WixSharpExtensions
         }
 
         /// <summary>
-        /// Adds local (embedded) dependency to the boostrapper bundle.
+        /// Adds local (embedded) dependency to the bootstrapper bundle.
         /// </summary>
         /// <typeparam name="TPackage"></typeparam>
         /// <param name="bundle"></param>
@@ -273,7 +280,11 @@ namespace NineDigit.WixSharpExtensions
             }
             else if (package is ExePackage exePackage)
             {
+#if NET8_0
+                exePackage.InstallArguments = exeInstallCommand;
+#else
                 exePackage.InstallCommand = exeInstallCommand;
+#endif
                 exeExitCodeMap?.BindTo(exePackage);
             }
 
@@ -385,7 +396,7 @@ namespace NineDigit.WixSharpExtensions
         }
 
         /// <summary>
-        /// Gets whehter any version of ASP.NET Core is installed.
+        /// Gets whether any version of ASP.NET Core is installed.
         /// </summary>
         /// <param name="bundle"></param>
         /// <param name="destinationVariableName">Name of the variable, that will be result of search saved to.</param>
@@ -495,7 +506,7 @@ namespace NineDigit.WixSharpExtensions
         /// <param name="destinationVariableName"></param>
         /// <param name="condition">Condition for evaluating the search. If this evaluates to false, the search is not executed at all.</param>
         /// <returns>Same instance for chaining.</returns>
-        public static Bundle AddRegistrySeachWindows10OrNewerDetected(this Bundle bundle, string destinationVariableName, WixExpression? condition = null)
+        public static Bundle AddRegistrySearchWindows10OrNewerDetected(this Bundle bundle, string destinationVariableName, WixExpression? condition = null)
         {
             if (bundle is null)
                 throw new ArgumentNullException(nameof(bundle));
@@ -589,7 +600,7 @@ namespace NineDigit.WixSharpExtensions
 
         /// <summary>
         /// Bundle itself will not be visible in Add/Remove programs menu.
-        /// It is still possible to to configure show/hide its chain items separately.
+        /// It is still possible to do configure show/hide its chain items separately.
         /// </summary>
         /// <param name="bundle"></param>
         /// <returns>Same instance for chaining.</returns>

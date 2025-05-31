@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net452</TargetFramework>
+    <TargetFrameworks>net452;net80-windows7.0</TargetFrameworks>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
 
     <!-- Version -->
     <Version>2.0.1</Version>
@@ -27,18 +28,23 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="NineDigit.WixSharpExtensions.xml" />
-	<None Include="$(SolutionDir)README.md" Pack="true" PackagePath="\" />
+    <Content Include="$(SolutionDir)README.md" Pack="true" PackagePath="\">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="WixSharp">
-      <Version>1.24.2</Version>
-    </PackageReference>
   </ItemGroup>
-  <ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net80-windows7.0'">
+	  <PackageReference Include="WixSharp.Core" Version="2.7.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
+	<PackageReference Include="WixSharp" Version="1.24.2" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Windows" />
