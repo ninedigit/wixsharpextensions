@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using WixSharp;
 
@@ -33,20 +32,25 @@ namespace NineDigit.WixSharpExtensions
             
             var x86ExeFilePath = Path.Combine(this.x86BuildDirectoryPath, exeFileName);
             var x64ExeFilePath = Path.Combine(this.x64BuildDirectoryPath, exeFileName);
-            var x86ExeFileVersion = GetExecutableVersion(x86ExeFilePath);
-            var x64ExeFileVersion = GetExecutableVersion(x64ExeFilePath);
 
-            if (x86ExeFileVersion != x64ExeFileVersion)
-                throw new InvalidOperationException($"Version mismatch between X86 build ({x86ExeFileVersion}) and X64 build ({x64ExeFileVersion})");
+            if (!FileHelper.TryGetFileVersions(x86ExeFilePath, out FileVersions? x86Versions))
+                throw new InvalidOperationException($"Could not parse X86 build assembly versions.");
 
-            this.Version = x64ExeFileVersion;
+            if (!FileHelper.TryGetFileVersions(x64ExeFilePath, out FileVersions? x64Versions))
+                throw new InvalidOperationException($"Could not parse X64 build assembly versions.");
+
+            if (x64Versions != x86Versions)
+                throw new InvalidOperationException(
+                    $"Version mismatch between X86 build (version: '{x86Versions.Version}', version info: {x86Versions.VersionInfo}) " +
+                    $"and X64 build (version: '{x64Versions.Version}' / version info: '{x64Versions.VersionInfo}').");
+
+            Versions = x64Versions;
         }
 
-        public Version Version { get; }
+        [Obsolete("Use Versions property.")]
+        public Version Version => Versions.Version;
+        public FileVersions Versions { get; }
         public string ExecutableFileName { get; }
-
-        private static Version GetExecutableVersion(string executableFilePath)
-            => Version.Parse(FileVersionInfo.GetVersionInfo(executableFilePath).ProductVersion);
 
         /// <summary>
         /// </summary>

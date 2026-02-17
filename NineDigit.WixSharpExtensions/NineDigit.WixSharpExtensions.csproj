@@ -6,14 +6,14 @@
     <Nullable>enable</Nullable>
 
     <!-- Version -->
-    <Version>2.0.1</Version>
-    <PackageVersion>2.0.1</PackageVersion>
+    <Version>2.0.2-beta.1</Version>
+    <PackageVersion>2.0.2-beta.1</PackageVersion>
     <PackageReleaseNotes></PackageReleaseNotes>
 
     <!-- NuGet meta -->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Nine Digit, s.r.o.</Authors>
-    <Copyright>(c) 2024</Copyright>
+    <Copyright>(c) 2026</Copyright>
     <PackageTags>wix wix-toolset msi csharp-library wixsharp</PackageTags>
     <Title>WixSharp extensions</Title>
     <RepositoryUrl>https://github.com/ninedigit/wixsharpextensions</RepositoryUrl>

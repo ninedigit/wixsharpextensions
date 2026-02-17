@@ -1,4 +1,8 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
 
@@ -42,6 +46,37 @@ namespace NineDigit.WixSharpExtensions
             catch (BadImageFormatException)
             {
                 version = default;
+                return false;
+            }
+        }
+
+        public static bool TryGetFileVersions(this string filePath, out FileVersions? versions)
+        {
+            if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
+            {
+                versions = null;
+                return false;
+            }
+
+            try
+            {
+                var fvi = FileVersionInfo.GetVersionInfo(filePath);
+                // e.g. '1.2.3'
+                Version version;
+
+                if (fvi.FileBuildPart >= 0)
+                    version = new Version(fvi.FileMajorPart, fvi.FileMinorPart, fvi.FileBuildPart);
+                else
+                    version = new Version(fvi.FileMajorPart, fvi.FileMinorPart);
+
+                var versionInfo = fvi.ProductVersion; // e.g. '1.2.3-beta.4'
+                
+                versions = new FileVersions(version, versionInfo);
+                return true;
+            }
+            catch
+            {
+                versions = default;
                 return false;
             }
         }
